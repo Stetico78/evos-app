@@ -1,534 +1,279 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090a0d">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090a0d">
+<title>EVOS | Evolution Operating System</title>
 
-  <title>EVOS | Evolution Operating System</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --gold:#d8b45a;--gold2:#fff0a6;--silver:#c7cbd1;
+ --bg:#08090c;--text:#f5f5f5;--muted:#9da3ad;
+}
+body{
+ min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ color:var(--text);
+ background:radial-gradient(circle at 50% -10%,#343943 0%,#15181e 32%,#08090c 68%);
+}
+.app{width:min(1500px,96%);margin:auto;padding:24px 0 50px}
+header{display:flex;justify-content:space-between;align-items:center;padding:8px 8px 28px}
+.logo{
+ font-size:clamp(40px,6vw,70px);font-weight:900;letter-spacing:8px;
+ background:linear-gradient(180deg,#fff,#d8d8d8,#fff1a7,#b88625,#f7db79,#8d671c);
+ -webkit-background-clip:text;color:transparent;
+ filter:drop-shadow(0 8px 14px #000);
+}
+.subtitle{color:var(--silver);letter-spacing:4px;font-size:10px}
+.status{
+ border:1px solid #806d37;background:#332b17;color:#f2d67f;
+ border-radius:30px;padding:9px 15px;font-size:12px
+}
+.hero{
+ padding:40px;border:1px solid #594a27;border-radius:28px;
+ background:linear-gradient(145deg,#ffffff14,#ffffff05);
+ box-shadow:0 30px 80px #0008
+}
+.hero h1{font-size:clamp(31px,5vw,62px)}
+.hero h1 span{color:#e6c96f}
+.hero p{margin-top:18px;color:#b9bec7;line-height:1.7;max-width:760px}
+.formula{margin-top:25px;color:#ffe89a;font-weight:700}
+.section-title{margin:38px 4px 18px}
+.section-title p{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{
+ min-height:185px;padding:22px;border-radius:22px;
+ border:1px solid #ffffff17;background:linear-gradient(145deg,#ffffff12,#ffffff05);
+ cursor:pointer;transition:.2s;position:relative
+}
+.card:hover{transform:translateY(-6px);border-color:#d8b45a}
+.icon{
+ width:50px;height:50px;display:grid;place-items:center;border-radius:15px;
+ background:#22252b;border:1px solid #68582f;font-size:24px
+}
+.card h3{margin-top:17px;color:#f5e5ad}
+.card p{margin-top:8px;color:#979da7;font-size:13px;line-height:1.5}
+.arrow{position:absolute;right:20px;bottom:17px;color:var(--gold);font-size:21px}
+.panel{
+ margin-top:24px;padding:24px;border-radius:22px;
+ border:1px solid #ffffff15;background:#ffffff08
+}
+button{
+ border:0;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer;
+ background:linear-gradient(135deg,#fff2b0,#c49332);color:#17120a
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+/* MODULE */
+.module{display:none}
+.module.active{display:block}
+.dashboard.hidden{display:none}
+.module-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.back{background:#25282e;color:#eee;border:1px solid #555}
+.crm-grid{display:grid;grid-template-columns:1fr 2fr;gap:18px}
+.crm-box{
+ padding:22px;border-radius:20px;border:1px solid #ffffff18;background:#ffffff08
+}
+.crm-box h3{color:#f0d681;margin-bottom:17px}
+input,select,textarea{
+ width:100%;margin-bottom:11px;padding:13px;border-radius:10px;
+ border:1px solid #444;background:#111318;color:white
+}
+textarea{min-height:80px}
+.client{
+ padding:15px;margin-bottom:10px;border-radius:12px;
+ background:#15171c;border:1px solid #333
+}
+.client strong{color:#f0d681}
+.client small{display:block;color:#999;margin-top:5px}
+.empty{color:#777;text-align:center;padding:30px}
+footer{text-align:center;color:#60656e;font-size:11px;margin-top:35px}
 
-    :root {
-      --gold: #d8b45a;
-      --gold2: #fff0a6;
-      --silver: #c7cbd1;
-      --dark: #07080b;
-      --panel: rgba(255,255,255,.055);
-      --border: rgba(216,180,90,.28);
-      --text: #f5f5f5;
-      --muted: #9da3ad;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 50% -10%, #343943 0%, #15181e 32%, #08090c 68%),
-        #08090c;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(120deg, transparent 30%, rgba(255,255,255,.025), transparent 70%);
-    }
-
-    .app {
-      width: min(1500px, 96%);
-      margin: auto;
-      padding: 24px 0 50px;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 8px 8px 28px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
-
-    .logo {
-      font-size: clamp(38px, 5vw, 68px);
-      font-weight: 900;
-      letter-spacing: 8px;
-      line-height: 1;
-      background: linear-gradient(
-        180deg,
-        #fff 0%,
-        #d8d8d8 18%,
-        #fff1a7 36%,
-        #b88625 57%,
-        #f7db79 74%,
-        #8d671c 100%
-      );
-      -webkit-background-clip: text;
-      color: transparent;
-      filter:
-        drop-shadow(0 2px 0 #3d2b0b)
-        drop-shadow(0 8px 14px rgba(0,0,0,.8))
-        drop-shadow(0 0 18px rgba(216,180,90,.22));
-    }
-
-    .brand-text small {
-      display: block;
-      color: var(--silver);
-      letter-spacing: 4px;
-      font-size: 10px;
-      margin-top: 7px;
-    }
-
-    .status {
-      border: 1px solid rgba(216,180,90,.35);
-      background: rgba(216,180,90,.08);
-      color: #f2d67f;
-      border-radius: 30px;
-      padding: 9px 15px;
-      font-size: 12px;
-    }
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 42px;
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      background:
-        linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.025));
-      box-shadow:
-        0 30px 80px rgba(0,0,0,.55),
-        inset 0 1px rgba(255,255,255,.12);
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      width: 420px;
-      height: 420px;
-      right: -160px;
-      top: -220px;
-      border-radius: 50%;
-      background: rgba(216,180,90,.12);
-      filter: blur(40px);
-    }
-
-    .hero h1 {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      font-size: clamp(31px, 5vw, 64px);
-      line-height: 1.03;
-      letter-spacing: -2px;
-    }
-
-    .hero h1 span {
-      background: linear-gradient(90deg, #fff, #e6c96f);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .hero p {
-      position: relative;
-      z-index: 1;
-      margin-top: 18px;
-      max-width: 750px;
-      color: #b9bec7;
-      line-height: 1.7;
-      font-size: 16px;
-    }
-
-    .formula {
-      margin-top: 26px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      align-items: center;
-      color: var(--gold2);
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .formula span {
-      padding: 8px 12px;
-      border-radius: 20px;
-      border: 1px solid rgba(216,180,90,.25);
-      background: rgba(216,180,90,.07);
-    }
-
-    .section-title {
-      margin: 40px 4px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-    }
-
-    .section-title h2 {
-      font-size: 22px;
-      letter-spacing: .5px;
-    }
-
-    .section-title p {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    .card {
-      position: relative;
-      min-height: 190px;
-      padding: 22px;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,.09);
-      background:
-        linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
-      box-shadow:
-        0 18px 35px rgba(0,0,0,.28),
-        inset 0 1px rgba(255,255,255,.09);
-      cursor: pointer;
-      transition: .25s ease;
-      overflow: hidden;
-    }
-
-    .card:hover {
-      transform: translateY(-7px);
-      border-color: rgba(216,180,90,.55);
-      box-shadow:
-        0 25px 55px rgba(0,0,0,.5),
-        0 0 25px rgba(216,180,90,.07);
-    }
-
-    .icon {
-      width: 52px;
-      height: 52px;
-      display: grid;
-      place-items: center;
-      border-radius: 16px;
-      font-size: 25px;
-      background: linear-gradient(145deg, #383d46, #15171c);
-      border: 1px solid rgba(216,180,90,.25);
-      box-shadow:
-        inset 0 1px rgba(255,255,255,.13),
-        0 10px 20px rgba(0,0,0,.35);
-    }
-
-    .card h3 {
-      margin-top: 18px;
-      font-size: 18px;
-      color: #f5e5ad;
-    }
-
-    .card p {
-      margin-top: 8px;
-      color: #979da7;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .arrow {
-      position: absolute;
-      right: 20px;
-      bottom: 18px;
-      color: var(--gold);
-      font-size: 21px;
-      transition: .2s;
-    }
-
-    .card:hover .arrow {
-      transform: translateX(5px);
-    }
-
-    .bottom {
-      margin-top: 25px;
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 16px;
-    }
-
-    .panel {
-      border-radius: 22px;
-      padding: 24px;
-      border: 1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.035);
-    }
-
-    .panel h3 {
-      color: #ecd17c;
-      margin-bottom: 15px;
-    }
-
-    .progress {
-      height: 9px;
-      background: #1c1f25;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 13px;
-    }
-
-    .progress div {
-      width: 68%;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #8b651d, #f3d777, #c1c5cc);
-    }
-
-    .stats {
-      display: flex;
-      gap: 30px;
-      margin-top: 20px;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 27px;
-      color: #fff0b1;
-    }
-
-    .stat small {
-      color: #888f99;
-    }
-
-    .ai {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .ai-button {
-      border: 0;
-      padding: 14px 18px;
-      border-radius: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      color: #15110a;
-      background: linear-gradient(135deg, #fff2b0, #c49332);
-      box-shadow: 0 10px 25px rgba(216,180,90,.18);
-    }
-
-    footer {
-      padding: 35px 5px 0;
-      text-align: center;
-      color: #60656e;
-      font-size: 11px;
-      letter-spacing: 1px;
-    }
-
-    @media (max-width: 1050px) {
-      .grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 650px) {
-      header {
-        align-items: flex-start;
-      }
-
-      .status {
-        display: none;
-      }
-
-      .hero {
-        padding: 27px 22px;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .bottom {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
-        gap: 16px;
-        flex-wrap: wrap;
-      }
-    }
-  </style>
+@media(max-width:1050px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){
+ .grid,.crm-grid{grid-template-columns:1fr}
+ .hero{padding:25px 20px}
+ .status{display:none}
+}
+</style>
 </head>
 
 <body>
-
 <div class="app">
 
-  <header>
-    <div class="brand">
-      <div class="brand-text">
-        <div class="logo">EVOS</div>
-        <small>EVOLUTION OPERATING SYSTEM</small>
-      </div>
-    </div>
+<header>
+ <div>
+  <div class="logo">EVOS</div>
+  <div class="subtitle">EVOLUTION OPERATING SYSTEM</div>
+ </div>
+ <div class="status">● SYSTEM ONLINE</div>
+</header>
 
-    <div class="status">● SYSTEM ONLINE</div>
-  </header>
+<div id="dashboard" class="dashboard">
 
-  <section class="hero">
-    <h1>
-      Tu vida. Tu negocio.<br>
-      <span>Una sola evolución.</span>
-    </h1>
+<section class="hero">
+ <h1>Tu vida. Tu negocio.<br><span>Una sola evolución.</span></h1>
+ <p>EVOS conecta cuerpo, mente, emoción, estrategia y acción en un único sistema inteligente diseñado para convertir objetivos en resultados reales.</p>
+ <div class="formula">EMOCIÓN + ESTRATEGIA + ACCIÓN = EVOLUCIÓN</div>
+</section>
 
-    <p>
-      EVOS conecta cuerpo, mente, emoción, estrategia y acción
-      en un único sistema inteligente diseñado para convertir
-      objetivos en resultados reales.
-    </p>
+<div class="section-title">
+ <h2>EVOS Dashboard</h2>
+ <p>Control central de tu evolución</p>
+</div>
 
-    <div class="formula">
-      <span>EMOCIÓN</span> +
-      <span>ESTRATEGIA</span> +
-      <span>ACCIÓN</span> =
-      <span>EVOLUCIÓN</span>
-    </div>
-  </section>
+<main class="grid">
+ <div class="card" onclick="openModule('Health')"><div class="icon">◉</div><h3>Health</h3><p>Entrenamiento, recuperación, energía y hábitos.</p><div class="arrow">→</div></div>
+ <div class="card" onclick="openModule('Mind')"><div class="icon">◇</div><h3>Mind & Emotion</h3><p>Coaching, motivación y claridad emocional.</p><div class="arrow">→</div></div>
+ <div class="card" onclick="openModule('Business')"><div class="icon">△</div><h3>Business</h3><p>Servicios, estrategia, ventas y crecimiento.</p><div class="arrow">→</div></div>
+ <div class="card" onclick="openModule('Finance')"><div class="icon">€</div><h3>Finance</h3><p>Ingresos, gastos y previsiones.</p><div class="arrow">→</div></div>
+ <div class="card" onclick="openCRM()"><div class="icon">◎</div><h3>CRM</h3><p>Clientes, seguimiento y oportunidades.</p><div class="arrow">→</div></div>
+ <div class="card" onclick="openModule('Marketing')"><div class="icon">✦</div><h3>Marketing</h3><p>Contenido, campañas y captación.</p><div class="arrow">→</div></div>
+ <div class="card" onclick="openModule('Community')"><div class="icon">♢</div><h3>Community</h3><p>Eventos, fitness y comunidad.</p><div class="arrow">→</div></div>
+ <div class="card" onclick="openModule('Automation')"><div class="icon">⚙</div><h3>Automation</h3><p>IA y procesos automáticos.</p><div class="arrow">→</div></div>
+</main>
 
-  <div class="section-title">
-    <div>
-      <h2>EVOS Dashboard</h2>
-      <p>Control central de tu evolución</p>
-    </div>
+<div class="panel">
+ <h3 style="color:#ecd17c">Evolution Score</h3>
+ <p style="color:#999;margin-top:10px">Sistema EVOS operativo · 8 módulos conectables · AI Ready</p>
+</div>
+
+</div>
+
+<!-- CRM -->
+<section id="crm" class="module">
+ <div class="module-header">
+  <div>
+   <div class="logo" style="font-size:38px">EVOS CRM</div>
+   <p style="color:#999">Clientes · Leads · Seguimiento</p>
+  </div>
+  <button class="back" onclick="closeCRM()">← Dashboard</button>
+ </div>
+
+ <div class="crm-grid">
+
+  <div class="crm-box">
+   <h3>+ Nuevo contacto</h3>
+
+   <input id="name" placeholder="Nombre">
+   <input id="phone" placeholder="Teléfono / WhatsApp">
+   <input id="email" placeholder="Email">
+
+   <select id="service">
+    <option>Entrenamiento Personal</option>
+    <option>Coaching</option>
+    <option>Masaje</option>
+    <option>Tarot</option>
+    <option>Astrología</option>
+    <option>Baile / Zouk</option>
+    <option>EVOS Business</option>
+    <option>Otro</option>
+   </select>
+
+   <select id="status">
+    <option>Nuevo Lead</option>
+    <option>Contactado</option>
+    <option>Cliente</option>
+    <option>Seguimiento</option>
+   </select>
+
+   <textarea id="notes" placeholder="Notas"></textarea>
+
+   <button onclick="saveClient()">GUARDAR CONTACTO</button>
   </div>
 
-  <main class="grid">
+  <div class="crm-box">
+   <h3>Base de clientes</h3>
+   <div id="clients"></div>
+  </div>
 
-    <div class="card" onclick="openModule('Health')">
-      <div class="icon">◉</div>
-      <h3>Health</h3>
-      <p>Entrenamiento, recuperación, energía, hábitos y evolución física.</p>
-      <div class="arrow">→</div>
-    </div>
+ </div>
+</section>
 
-    <div class="card" onclick="openModule('Mind')">
-      <div class="icon">◇</div>
-      <h3>Mind & Emotion</h3>
-      <p>Coaching, motivación, claridad emocional y desarrollo personal.</p>
-      <div class="arrow">→</div>
-    </div>
-
-    <div class="card" onclick="openModule('Business')">
-      <div class="icon">△</div>
-      <h3>Business</h3>
-      <p>Servicios, objetivos, estrategia, ventas y crecimiento profesional.</p>
-      <div class="arrow">→</div>
-    </div>
-
-    <div class="card" onclick="openModule('Finance')">
-      <div class="icon">€</div>
-      <h3>Finance</h3>
-      <p>Ingresos, gastos, previsiones y control económico inteligente.</p>
-      <div class="arrow">→</div>
-    </div>
-
-    <div class="card" onclick="openModule('CRM')">
-      <div class="icon">◎</div>
-      <h3>CRM</h3>
-      <p>Clientes, contactos, seguimiento, oportunidades y fidelización.</p>
-      <div class="arrow">→</div>
-    </div>
-
-    <div class="card" onclick="openModule('Marketing')">
-      <div class="icon">✦</div>
-      <h3>Marketing</h3>
-      <p>Contenido, campañas, redes sociales y captación automática.</p>
-      <div class="arrow">→</div>
-    </div>
-
-    <div class="card" onclick="openModule('Community')">
-      <div class="icon">♢</div>
-      <h3>Community</h3>
-      <p>Eventos, grupos, fitness, comunidad y conexión entre personas.</p>
-      <div class="arrow">→</div>
-    </div>
-
-    <div class="card" onclick="openModule('Automation')">
-      <div class="icon">⚙</div>
-      <h3>Automation</h3>
-      <p>IA, procesos automáticos y coordinación inteligente del sistema.</p>
-      <div class="arrow">→</div>
-    </div>
-
-  </main>
-
-  <section class="bottom">
-
-    <div class="panel">
-      <h3>Evolution Score</h3>
-      <p style="color:#989ea7">
-        Nivel global actual de desarrollo del sistema.
-      </p>
-
-      <div class="progress">
-        <div></div>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <strong>68%</strong>
-          <small>Evolución</small>
-        </div>
-
-        <div class="stat">
-          <strong>8</strong>
-          <small>Módulos</small>
-        </div>
-
-        <div class="stat">
-          <strong>24/7</strong>
-          <small>EVOS AI</small>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel ai">
-      <div>
-        <h3>EVOS AI</h3>
-        <p style="color:#989ea7; line-height:1.6">
-          Tu asistente central analiza, organiza y conecta todo el ecosistema EVOS.
-        </p>
-      </div>
-
-      <button class="ai-button" onclick="activateAI()">
-        ACTIVAR EVOS AI
-      </button>
-    </div>
-
-  </section>
-
-  <footer>
-    EVOS © 2026 · ESSENCE → STRATEGY → EXECUTION → EVOLUTION
-  </footer>
+<footer>EVOS © 2026 · ESSENCE → STRATEGY → EXECUTION → EVOLUTION</footer>
 
 </div>
 
 <script>
-  function openModule(module) {
-    alert("EVOS " + module + " · módulo preparado para conexión.");
-  }
+function openCRM(){
+ document.getElementById("dashboard").classList.add("hidden");
+ document.getElementById("crm").classList.add("active");
+ renderClients();
+}
 
-  function activateAI() {
-    alert("EVOS AI · núcleo preparado para activación.");
-  }
+function closeCRM(){
+ document.getElementById("crm").classList.remove("active");
+ document.getElementById("dashboard").classList.remove("hidden");
+}
+
+function openModule(name){
+ alert("EVOS "+name+" · siguiente módulo en activación.");
+}
+
+function getClients(){
+ return JSON.parse(localStorage.getItem("evos_clients") || "[]");
+}
+
+function saveClient(){
+ const name=document.getElementById("name").value.trim();
+
+ if(!name){
+  alert("Introduce el nombre del contacto.");
+  return;
+ }
+
+ const clients=getClients();
+
+ clients.unshift({
+  id:Date.now(),
+  name:name,
+  phone:document.getElementById("phone").value,
+  email:document.getElementById("email").value,
+  service:document.getElementById("service").value,
+  status:document.getElementById("status").value,
+  notes:document.getElementById("notes").value,
+  created:new Date().toLocaleDateString("es-ES")
+ });
+
+ localStorage.setItem("evos_clients",JSON.stringify(clients));
+
+ ["name","phone","email","notes"].forEach(id=>document.getElementById(id).value="");
+
+ renderClients();
+}
+
+function deleteClient(id){
+ const clients=getClients().filter(c=>c.id!==id);
+ localStorage.setItem("evos_clients",JSON.stringify(clients));
+ renderClients();
+}
+
+function renderClients(){
+ const box=document.getElementById("clients");
+ const clients=getClients();
+
+ if(!clients.length){
+  box.innerHTML='<div class="empty">Todavía no hay contactos.<br>Añade el primer cliente EVOS.</div>';
+  return;
+ }
+
+ box.innerHTML=clients.map(c=>`
+  <div class="client">
+   <strong>${escapeHTML(c.name)}</strong>
+   <small>${escapeHTML(c.service)} · ${escapeHTML(c.status)}</small>
+   <small>${escapeHTML(c.phone||"")} ${c.email ? " · "+escapeHTML(c.email) : ""}</small>
+   <small>${escapeHTML(c.notes||"")}</small>
+   <small>Alta: ${escapeHTML(c.created)}</small>
+   <button style="margin-top:10px;padding:7px 10px" onclick="deleteClient(${c.id})">Eliminar</button>
+  </div>
+ `).join("");
+}
+
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,function(m){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m];
+ });
+}
 </script>
 
 </body>
