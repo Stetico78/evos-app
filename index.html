@@ -3,97 +3,792 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>EVOS · Acceso</title>
+  <title>EVOS · Evolution System</title>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    :root{--bg:#070913;--card:#11162a;--line:#29304a;--text:#f6f7fb;--muted:#aeb6ce;--violet:#9a72ff;--cyan:#55d8ff}
-    *{box-sizing:border-box} body{margin:0;min-height:100vh;font-family:Inter,system-ui,Arial;background:linear-gradient(145deg,#10152b,#070913);color:var(--text)}
-    .wrap{width:min(960px,calc(100% - 32px));margin:auto;padding:34px 0}
-    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
-    .logo{font-size:24px;font-weight:1000;letter-spacing:.14em}.logo span{color:var(--cyan)}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.card{background:rgba(17,22,42,.92);border:1px solid var(--line);border-radius:22px;padding:24px}
-    h1{font-size:42px;margin:0 0 10px} h2{margin-top:0} p{color:var(--muted);line-height:1.55}
-    label{display:block;margin:13px 0 6px;color:var(--muted);font-weight:700} input{width:100%;padding:13px;border-radius:12px;border:1px solid var(--line);background:#0b1020;color:white}
-    button{width:100%;margin-top:14px;padding:13px;border:0;border-radius:12px;font-weight:900;cursor:pointer;background:linear-gradient(90deg,var(--violet),var(--cyan));color:#07101a}
-    button.secondary{background:#171d34;color:white;border:1px solid var(--line)}
-    .status{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:12px;color:var(--muted);white-space:pre-wrap}.hidden{display:none}
-    @media(max-width:760px){.grid{grid-template-columns:1fr}h1{font-size:34px}}
+    :root{
+      --bg:#060814;
+      --panel:#10162b;
+      --panel2:#151d38;
+      --line:#273150;
+      --text:#f7f8fc;
+      --muted:#9da8c7;
+      --cyan:#57ddff;
+      --violet:#9a74ff;
+      --green:#68e0a0;
+      --danger:#ff6b7a;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at top left,rgba(87,221,255,.10),transparent 30%),
+        radial-gradient(circle at top right,rgba(154,116,255,.12),transparent 35%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    button,input{
+      font:inherit;
+    }
+
+    button{
+      cursor:pointer;
+    }
+
+    .hidden{
+      display:none!important;
+    }
+
+    /* LOGIN */
+
+    #authView{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+
+    .auth-shell{
+      width:min(980px,100%);
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:22px;
+    }
+
+    .hero,.auth-card{
+      border:1px solid var(--line);
+      border-radius:28px;
+      background:rgba(16,22,43,.92);
+      box-shadow:0 30px 70px rgba(0,0,0,.28);
+    }
+
+    .hero{
+      padding:42px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .brand{
+      font-size:28px;
+      font-weight:1000;
+      letter-spacing:.16em;
+      margin-bottom:24px;
+    }
+
+    .brand span{
+      color:var(--cyan);
+    }
+
+    .hero h1{
+      font-size:52px;
+      line-height:1;
+      margin:0 0 18px;
+    }
+
+    .hero p{
+      color:var(--muted);
+      font-size:18px;
+      line-height:1.55;
+      margin:0;
+    }
+
+    .formula{
+      margin-top:28px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:#0b1020;
+      color:#dfe5ff;
+      font-weight:800;
+    }
+
+    .auth-card{
+      padding:30px;
+    }
+
+    .auth-card h2{
+      font-size:28px;
+      margin:0 0 6px;
+    }
+
+    .auth-card p{
+      margin-top:0;
+      color:var(--muted);
+    }
+
+    label{
+      display:block;
+      margin:16px 0 7px;
+      font-weight:700;
+      color:#c6cce0;
+    }
+
+    input{
+      width:100%;
+      padding:14px 15px;
+      border-radius:13px;
+      border:1px solid var(--line);
+      background:#0a0f1e;
+      color:white;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:var(--cyan);
+    }
+
+    .primary,.secondary,.danger{
+      width:100%;
+      border-radius:13px;
+      padding:14px;
+      border:0;
+      font-weight:900;
+      margin-top:13px;
+    }
+
+    .primary{
+      background:linear-gradient(90deg,var(--violet),var(--cyan));
+      color:#07101a;
+    }
+
+    .secondary{
+      background:#171f39;
+      color:white;
+      border:1px solid var(--line);
+    }
+
+    .danger{
+      background:#28131b;
+      color:#ffb7bf;
+      border:1px solid #5c2530;
+    }
+
+    .status{
+      margin-top:15px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      color:var(--muted);
+      background:#0a0f1e;
+      white-space:pre-wrap;
+    }
+
+    /* DASHBOARD */
+
+    #appView{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:240px 1fr;
+    }
+
+    .sidebar{
+      position:sticky;
+      top:0;
+      height:100vh;
+      border-right:1px solid var(--line);
+      background:rgba(8,12,25,.96);
+      padding:24px 18px;
+    }
+
+    .sidebar .brand{
+      margin-bottom:30px;
+    }
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .nav button{
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      text-align:left;
+      padding:13px 14px;
+      border-radius:12px;
+      font-weight:800;
+    }
+
+    .nav button:hover,
+    .nav button.active{
+      background:#151d38;
+      color:white;
+    }
+
+    .main{
+      padding:28px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:center;
+      margin-bottom:26px;
+    }
+
+    .topbar h1{
+      margin:0;
+      font-size:32px;
+    }
+
+    .topbar p{
+      margin:5px 0 0;
+      color:var(--muted);
+    }
+
+    .userbox{
+      text-align:right;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:linear-gradient(180deg,rgba(21,29,56,.95),rgba(11,16,32,.95));
+      padding:20px;
+      min-height:150px;
+    }
+
+    .card h3{
+      margin:0 0 8px;
+      font-size:18px;
+    }
+
+    .card p{
+      color:var(--muted);
+      line-height:1.5;
+      margin:0;
+    }
+
+    .metric{
+      font-size:34px;
+      font-weight:1000;
+      margin:12px 0 4px;
+    }
+
+    .tag{
+      display:inline-block;
+      padding:5px 9px;
+      border-radius:999px;
+      background:#0b1020;
+      border:1px solid var(--line);
+      color:var(--cyan);
+      font-size:12px;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    .section{
+      display:none;
+    }
+
+    .section.active{
+      display:block;
+    }
+
+    .section-title{
+      margin-bottom:18px;
+    }
+
+    .section-title h2{
+      margin:0 0 6px;
+      font-size:28px;
+    }
+
+    .section-title p{
+      color:var(--muted);
+      margin:0;
+    }
+
+    .full{
+      grid-column:1/-1;
+    }
+
+    .action{
+      margin-top:14px;
+      display:inline-block;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#111a31;
+      color:white;
+      font-weight:800;
+    }
+
+    @media(max-width:900px){
+      .auth-shell{
+        grid-template-columns:1fr;
+      }
+
+      .hero{
+        display:none;
+      }
+
+      #appView{
+        grid-template-columns:1fr;
+      }
+
+      .sidebar{
+        position:relative;
+        height:auto;
+        border-right:0;
+        border-bottom:1px solid var(--line);
+      }
+
+      .nav{
+        flex-direction:row;
+        overflow:auto;
+      }
+
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      .main{
+        padding:18px;
+      }
+    }
   </style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="top"><div class="logo">EV<span>OS</span></div><div>Área privada</div></div>
-  <div class="grid">
-    <section class="card">
-      <h1>Entra en EVOS</h1>
-      <p>Registro, acceso y sesión conectados a Supabase.</p>
-      <label>Email</label><input id="email" type="email" autocomplete="email">
-      <label>Contraseña</label><input id="password" type="password" autocomplete="current-password">
-      <button id="login">Entrar</button>
-      <button id="signup" class="secondary">Crear cuenta</button>
-      <div id="status" class="status">Comprobando conexión…</div>
-    </section>
 
-    <section class="card">
-      <h2>Perfil EVOS</h2>
-      <div id="loggedout"><p>Cuando inicies sesión verás aquí tu usuario y podremos conectar después objetivos, servicios, comunidad, reservas y EVOS Paid Time.</p></div>
-      <div id="loggedin" class="hidden">
-        <p>Sesión activa:</p>
-        <p id="user"></p>
-        <button id="logout" class="secondary">Cerrar sesión</button>
+  <!-- LOGIN -->
+  <section id="authView">
+    <div class="auth-shell">
+
+      <div class="hero">
+        <div class="brand">EV<span>OS</span></div>
+        <h1>Tu sistema de evolución personal y profesional.</h1>
+        <p>
+          Centraliza entrenamiento, coaching, comunidad, reservas,
+          servicios, clientes y monetización en una sola plataforma.
+        </p>
+
+        <div class="formula">
+          Esencia → Estrategia → Ejecución → Evolución
+        </div>
       </div>
-    </section>
-  </div>
-</div>
-<script>
-let sb;
 
-const $ = id => document.getElementById(id);
-function msg(text){ $('status').textContent = text; }
+      <div class="auth-card">
+        <h2>Entrar en EVOS</h2>
+        <p>Acceso privado conectado a Supabase.</p>
 
-async function init(){
-  try{
-    const r = await fetch('/api/config');
-    const c = await r.json();
-    if(!r.ok || !c.ok) throw new Error(c.error || 'No se pudo leer configuración');
-    sb = supabase.createClient(c.url, c.anonKey);
-    const { data, error } = await sb.auth.getSession();
-    if(error) throw error;
-    msg('Conexión Supabase OK');
-    render(data.session);
-    sb.auth.onAuthStateChange((_e, session)=>render(session));
-  }catch(e){ msg('ERROR: ' + e.message); }
-}
+        <label>Email</label>
+        <input id="email" type="email" autocomplete="email">
 
-function render(session){
-  if(session){
-    $('loggedout').classList.add('hidden');
-    $('loggedin').classList.remove('hidden');
-    $('user').textContent = session.user.email + ' · ' + session.user.id;
-  }else{
-    $('loggedout').classList.remove('hidden');
-    $('loggedin').classList.add('hidden');
-  }
-}
+        <label>Contraseña</label>
+        <input id="password" type="password" autocomplete="current-password">
 
-$('signup').onclick = async ()=>{
-  if(!sb) return msg('Supabase todavía no está listo');
-  const email=$('email').value.trim(), password=$('password').value;
-  const {data,error}=await sb.auth.signUp({email,password});
-  if(error) return msg('ERROR registro: '+error.message);
-  msg(data.session ? 'Cuenta creada y sesión iniciada.' : 'Cuenta creada. Revisa tu email si Supabase exige confirmación.');
-};
+        <button id="login" class="primary">Entrar</button>
+        <button id="signup" class="secondary">Crear cuenta</button>
 
-$('login').onclick = async ()=>{
-  if(!sb) return msg('Supabase todavía no está listo');
-  const email=$('email').value.trim(), password=$('password').value;
-  const {error}=await sb.auth.signInWithPassword({email,password});
-  msg(error ? 'ERROR acceso: '+error.message : 'Acceso correcto.');
-};
+        <div id="status" class="status">Comprobando conexión…</div>
+      </div>
 
-$('logout').onclick = async ()=>{ if(sb){ await sb.auth.signOut(); msg('Sesión cerrada.'); } };
+    </div>
+  </section>
 
-init();
-</script>
+  <!-- DASHBOARD -->
+  <section id="appView" class="hidden">
+
+    <aside class="sidebar">
+      <div class="brand">EV<span>OS</span></div>
+
+      <div class="nav">
+        <button class="navbtn active" data-target="inicio">Inicio</button>
+        <button class="navbtn" data-target="perfil">Perfil</button>
+        <button class="navbtn" data-target="servicios">Servicios</button>
+        <button class="navbtn" data-target="comunidad">Comunidad</button>
+        <button class="navbtn" data-target="reservas">Reservas</button>
+        <button class="navbtn" data-target="paidtime">Paid Time</button>
+      </div>
+
+      <button id="logout" class="danger">Cerrar sesión</button>
+    </aside>
+
+    <main class="main">
+
+      <div class="topbar">
+        <div>
+          <h1>EVOS Dashboard</h1>
+          <p>Centro operativo de tu evolución.</p>
+        </div>
+
+        <div class="userbox">
+          <div>Sesión activa</div>
+          <strong id="user"></strong>
+        </div>
+      </div>
+
+      <!-- INICIO -->
+      <section id="inicio" class="section active">
+
+        <div class="section-title">
+          <h2>Inicio</h2>
+          <p>Visión rápida de actividad, clientes y próximos pasos.</p>
+        </div>
+
+        <div class="grid">
+
+          <div class="card">
+            <span class="tag">Clientes</span>
+            <div class="metric">0</div>
+            <p>Clientes activos conectados a EVOS.</p>
+          </div>
+
+          <div class="card">
+            <span class="tag">Reservas</span>
+            <div class="metric">0</div>
+            <p>Próximas sesiones y eventos.</p>
+          </div>
+
+          <div class="card">
+            <span class="tag">Ingresos</span>
+            <div class="metric">€0</div>
+            <p>Ingresos gestionados desde EVOS.</p>
+          </div>
+
+          <div class="card full">
+            <h3>Objetivo EVOS</h3>
+            <p>
+              Convertir contactos en clientes, clientes en comunidad
+              y comunidad en ingresos recurrentes.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PERFIL -->
+      <section id="perfil" class="section">
+
+        <div class="section-title">
+          <h2>Perfil EVOS</h2>
+          <p>Identidad, objetivos y evolución personal.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Datos personales</h3>
+            <p>Nombre, contacto, ubicación y preferencias.</p>
+            <button class="action">Configurar</button>
+          </div>
+
+          <div class="card">
+            <h3>Objetivos</h3>
+            <p>Físicos, mentales, emocionales y profesionales.</p>
+            <button class="action">Definir objetivos</button>
+          </div>
+
+          <div class="card">
+            <h3>Evolución</h3>
+            <p>Seguimiento del progreso general del usuario.</p>
+            <button class="action">Ver progreso</button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- SERVICIOS -->
+      <section id="servicios" class="section">
+
+        <div class="section-title">
+          <h2>Servicios</h2>
+          <p>Servicios vendibles dentro de EVOS.</p>
+        </div>
+
+        <div class="grid">
+
+          <div class="card">
+            <h3>Personal Training</h3>
+            <p>Entrenamiento individual físico y funcional.</p>
+            <button class="action">Gestionar</button>
+          </div>
+
+          <div class="card">
+            <h3>Coaching</h3>
+            <p>Trabajo mental, emocional y estratégico.</p>
+            <button class="action">Gestionar</button>
+          </div>
+
+          <div class="card">
+            <h3>Tarot & Evolución</h3>
+            <p>Lecturas evolutivas, orientación y destino.</p>
+            <button class="action">Gestionar</button>
+          </div>
+
+          <div class="card">
+            <h3>Masajes</h3>
+            <p>Servicios físicos y recuperación.</p>
+            <button class="action">Gestionar</button>
+          </div>
+
+          <div class="card">
+            <h3>Clases colectivas</h3>
+            <p>Urban Pump, Urban Kombat, Urban Balance y eventos.</p>
+            <button class="action">Gestionar</button>
+          </div>
+
+          <div class="card">
+            <h3>Baile</h3>
+            <p>Zouk, conexión, musicalidad y eventos.</p>
+            <button class="action">Gestionar</button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- COMUNIDAD -->
+      <section id="comunidad" class="section">
+
+        <div class="section-title">
+          <h2>Comunidad</h2>
+          <p>Gestión de grupos, usuarios, eventos y comunicación.</p>
+        </div>
+
+        <div class="grid">
+
+          <div class="card">
+            <h3>Miembros</h3>
+            <p>Usuarios y clientes conectados.</p>
+            <button class="action">Ver miembros</button>
+          </div>
+
+          <div class="card">
+            <h3>Eventos</h3>
+            <p>Masterclass, actividades y experiencias EVOS.</p>
+            <button class="action">Crear evento</button>
+          </div>
+
+          <div class="card">
+            <h3>Grupos</h3>
+            <p>Profesores, administradores, alumnos y clientes.</p>
+            <button class="action">Gestionar grupos</button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- RESERVAS -->
+      <section id="reservas" class="section">
+
+        <div class="section-title">
+          <h2>Reservas</h2>
+          <p>Agenda y sesiones de clientes.</p>
+        </div>
+
+        <div class="grid">
+
+          <div class="card">
+            <h3>Nueva reserva</h3>
+            <p>Crear una nueva sesión o cita.</p>
+            <button class="action">Crear reserva</button>
+          </div>
+
+          <div class="card">
+            <h3>Calendario</h3>
+            <p>Organización diaria, semanal y mensual.</p>
+            <button class="action">Abrir calendario</button>
+          </div>
+
+          <div class="card">
+            <h3>Pagos</h3>
+            <p>Asociar sesiones con pagos.</p>
+            <button class="action">Gestionar pagos</button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- PAID TIME -->
+      <section id="paidtime" class="section">
+
+        <div class="section-title">
+          <h2>EVOS Paid Time</h2>
+          <p>Monetización del tiempo de comunicación profesional.</p>
+        </div>
+
+        <div class="grid">
+
+          <div class="card">
+            <h3>Crear sesión</h3>
+            <p>Define duración, precio y tipo de comunicación.</p>
+            <button class="action">Crear sesión</button>
+          </div>
+
+          <div class="card">
+            <h3>Tiempo disponible</h3>
+            <div class="metric">0 min</div>
+            <p>Tiempo comprado por clientes.</p>
+          </div>
+
+          <div class="card">
+            <h3>Ingresos Paid Time</h3>
+            <div class="metric">€0</div>
+            <p>Ingresos generados por tiempo profesional.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </section>
+
+  <script>
+    let sb;
+
+    const $ = id => document.getElementById(id);
+
+    function msg(text){
+      $('status').textContent = text;
+    }
+
+    async function init(){
+      try{
+        const r = await fetch('/api/config');
+        const c = await r.json();
+
+        if(!r.ok || !c.ok){
+          throw new Error(c.error || 'No se pudo leer configuración');
+        }
+
+        sb = supabase.createClient(c.url, c.anonKey);
+
+        const { data, error } = await sb.auth.getSession();
+
+        if(error) throw error;
+
+        render(data.session);
+
+        sb.auth.onAuthStateChange((_event, session)=>{
+          render(session);
+        });
+
+        msg('Conexión Supabase OK');
+
+      }catch(e){
+        msg('ERROR: ' + e.message);
+      }
+    }
+
+    function render(session){
+      if(session){
+
+        $('authView').classList.add('hidden');
+        $('appView').classList.remove('hidden');
+
+        $('user').textContent = session.user.email || session.user.id;
+
+      }else{
+
+        $('authView').classList.remove('hidden');
+        $('appView').classList.add('hidden');
+
+      }
+    }
+
+    $('signup').onclick = async ()=>{
+      if(!sb){
+        return msg('Supabase todavía no está listo');
+      }
+
+      const email = $('email').value.trim();
+      const password = $('password').value;
+
+      if(!email || !password){
+        return msg('Introduce email y contraseña.');
+      }
+
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password
+      });
+
+      if(error){
+        return msg('ERROR registro: ' + error.message);
+      }
+
+      msg(
+        data.session
+        ? 'Cuenta creada y sesión iniciada.'
+        : 'Cuenta creada. Revisa tu email si requiere confirmación.'
+      );
+    };
+
+    $('login').onclick = async ()=>{
+      if(!sb){
+        return msg('Supabase todavía no está listo');
+      }
+
+      const email = $('email').value.trim();
+      const password = $('password').value;
+
+      if(!email || !password){
+        return msg('Introduce email y contraseña.');
+      }
+
+      const { error } = await sb.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      msg(
+        error
+        ? 'ERROR acceso: ' + error.message
+        : 'Acceso correcto.'
+      );
+    };
+
+    $('logout').onclick = async ()=>{
+      if(sb){
+        await sb.auth.signOut();
+      }
+    };
+
+    document.querySelectorAll('.navbtn').forEach(btn=>{
+
+      btn.onclick = ()=>{
+
+        document.querySelectorAll('.navbtn').forEach(b=>{
+          b.classList.remove('active');
+        });
+
+        btn.classList.add('active');
+
+        document.querySelectorAll('.section').forEach(section=>{
+          section.classList.remove('active');
+        });
+
+        $(btn.dataset.target).classList.add('active');
+      };
+
+    });
+
+    init();
+  </script>
+
 </body>
 </html>
