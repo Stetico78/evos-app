@@ -4,392 +4,460 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>EVOS · Evolution System</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    :root{
-      --bg:#060814;
-      --panel:#10162b;
-      --panel2:#151d38;
-      --line:#273150;
-      --text:#f7f8fc;
-      --muted:#9da8c7;
-      --cyan:#57ddff;
-      --violet:#9a74ff;
-      --green:#68e0a0;
-      --danger:#ff6b7a;
-    }
+:root{
+  --bg:#d7d9dc;
+  --bg-hi:#f3f4f5;
+  --bg-lo:#bfc3c8;
+  --panel:rgba(248,249,250,.66);
+  --panel-2:rgba(230,232,235,.74);
+  --line:rgba(255,255,255,.72);
+  --line-dark:rgba(28,31,36,.12);
+  --text:#141517;
+  --muted:#72767c;
+  --gold:#c8a45a;
+  --gold-hi:#f3dda2;
+  --gold-lo:#7d5a1f;
+  --silver:#b9bec5;
+  --silver-hi:#f8fafb;
+  --silver-lo:#7f858c;
+  --danger:#9f3945;
+  --shadow-xl:0 35px 90px rgba(34,38,45,.18),0 10px 30px rgba(34,38,45,.10);
+  --shadow-md:0 18px 45px rgba(34,38,45,.13),0 5px 14px rgba(34,38,45,.08);
+  --inner:inset 0 1px 0 rgba(255,255,255,.88),inset 0 -1px 0 rgba(0,0,0,.06);
+}
 
-    *{box-sizing:border-box}
+body[data-theme="black"]{
+  --bg:#0c0d0f;
+  --bg-hi:#202328;
+  --bg-lo:#050607;
+  --panel:rgba(28,30,34,.72);
+  --panel-2:rgba(18,20,23,.86);
+  --line:rgba(255,255,255,.09);
+  --line-dark:rgba(255,255,255,.08);
+  --text:#f5f5f2;
+  --muted:#a5a7aa;
+  --silver:#8f959d;
+  --silver-hi:#dadde1;
+  --silver-lo:#555b63;
+  --shadow-xl:0 35px 90px rgba(0,0,0,.56),0 10px 30px rgba(0,0,0,.34);
+  --shadow-md:0 18px 45px rgba(0,0,0,.40),0 5px 14px rgba(0,0,0,.30);
+  --inner:inset 0 1px 0 rgba(255,255,255,.06),inset 0 -1px 0 rgba(0,0,0,.42);
+}
 
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:
-        radial-gradient(circle at top left,rgba(87,221,255,.10),transparent 30%),
-        radial-gradient(circle at top right,rgba(154,116,255,.12),transparent 35%),
-        var(--bg);
-      color:var(--text);
-    }
+body[data-theme="white"]{
+  --bg:#f4f4f2;
+  --bg-hi:#ffffff;
+  --bg-lo:#e7e8ea;
+  --panel:rgba(255,255,255,.78);
+  --panel-2:rgba(247,248,249,.92);
+  --line:rgba(255,255,255,.92);
+  --line-dark:rgba(27,29,34,.09);
+  --text:#141517;
+  --muted:#777b80;
+  --shadow-xl:0 32px 80px rgba(42,46,52,.11),0 8px 24px rgba(42,46,52,.08);
+  --shadow-md:0 16px 38px rgba(42,46,52,.10),0 4px 12px rgba(42,46,52,.06);
+}
 
-    button,input{
-      font:inherit;
-    }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 15% -5%,rgba(255,255,255,.92),transparent 31%),
+    radial-gradient(circle at 85% 6%,rgba(200,164,90,.17),transparent 24%),
+    linear-gradient(145deg,var(--bg-hi),var(--bg) 52%,var(--bg-lo));
+  overflow-x:hidden;
+  transition:.3s ease;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(115deg,rgba(255,255,255,.16),transparent 20%),
+    repeating-linear-gradient(90deg,transparent 0 79px,rgba(255,255,255,.018) 80px);
+  mix-blend-mode:soft-light;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
 
-    button{
-      cursor:pointer;
-    }
+/* 3D EVOS BRAND */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  font-weight:1000;
+  letter-spacing:.20em;
+  white-space:nowrap;
+}
+.brand-mark{
+  position:relative;
+  width:44px;height:44px;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  color:#151515;
+  font-size:13px;
+  font-weight:1000;
+  background:
+    linear-gradient(145deg,#fff1bd 0%,#d8b96a 28%,#a97d31 62%,#f0d68f 100%);
+  border:1px solid rgba(255,255,255,.74);
+  box-shadow:
+    0 12px 24px rgba(107,78,24,.25),
+    inset 0 2px 2px rgba(255,255,255,.75),
+    inset 0 -4px 8px rgba(80,52,8,.22);
+  transform:perspective(400px) rotateX(8deg) rotateY(-8deg);
+}
+.brand-mark::before{
+  content:"";
+  position:absolute;
+  inset:4px;
+  border-radius:11px;
+  border:1px solid rgba(255,255,255,.40);
+  box-shadow:inset 0 0 18px rgba(255,255,255,.18);
+}
+.brand-word{
+  position:relative;
+  font-size:28px;
+  line-height:1;
+  color:#e6e8ea;
+  text-shadow:
+    0 1px 0 #fff,
+    0 2px 0 #cfd3d7,
+    0 3px 0 #aeb4bb,
+    0 5px 8px rgba(25,28,32,.25);
+}
+body[data-theme="black"] .brand-word{
+  color:#f3f4f5;
+  text-shadow:
+    0 1px 0 #ffffff,
+    0 2px 0 #c8ccd2,
+    0 3px 0 #8d939b,
+    0 6px 16px rgba(0,0,0,.6);
+}
+.brand-word .gold{
+  background:linear-gradient(180deg,#fff0b9 0%,#d9b662 35%,#8b6123 78%,#f1d68a 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  filter:drop-shadow(0 3px 2px rgba(101,73,19,.20));
+}
 
-    .hidden{
-      display:none!important;
-    }
+/* AUTH */
+#authView{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:34px;
+}
+.auth-shell{
+  width:min(1120px,100%);
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:26px;
+  align-items:stretch;
+}
+.hero,.auth-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:linear-gradient(145deg,var(--panel),var(--panel-2));
+  box-shadow:var(--shadow-xl),var(--inner);
+  backdrop-filter:blur(22px) saturate(1.2);
+}
+.hero{border-radius:34px;padding:54px;min-height:570px;display:flex;flex-direction:column;justify-content:center}
+.auth-card{border-radius:30px;padding:38px;display:flex;flex-direction:column;justify-content:center}
+.hero::before{
+  content:"";
+  position:absolute;
+  width:440px;height:440px;
+  right:-150px;bottom:-190px;
+  border-radius:50%;
+  border:1px solid rgba(200,164,90,.35);
+  box-shadow:
+    0 0 0 30px rgba(200,164,90,.045),
+    0 0 0 60px rgba(185,190,197,.06),
+    0 0 0 95px rgba(255,255,255,.045);
+}
+.hero h1{
+  max-width:700px;
+  font-size:clamp(46px,5.7vw,78px);
+  line-height:.93;
+  letter-spacing:-.06em;
+  margin:28px 0 20px;
+}
+.hero p{max-width:620px;color:var(--muted);font-size:18px;line-height:1.62;margin:0}
+.formula{
+  margin-top:30px;
+  width:max-content;
+  max-width:100%;
+  padding:13px 18px;
+  border-radius:999px;
+  border:1px solid rgba(200,164,90,.36);
+  background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(200,164,90,.08));
+  color:var(--text);
+  box-shadow:0 10px 22px rgba(40,40,40,.08),inset 0 1px 0 rgba(255,255,255,.70);
+  font-weight:900;
+  font-size:13px;
+}
+.auth-card h2{font-size:34px;margin:24px 0 6px;letter-spacing:-.04em}
+.auth-card p{margin:0;color:var(--muted)}
+label{display:block;margin:16px 0 7px;font-size:12px;font-weight:950;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+input{
+  width:100%;
+  padding:15px 16px;
+  border-radius:15px;
+  border:1px solid var(--line-dark);
+  background:rgba(255,255,255,.35);
+  color:var(--text);
+  outline:none;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.04);
+}
+body[data-theme="black"] input{background:rgba(255,255,255,.04)}
+input:focus{border-color:rgba(200,164,90,.75);box-shadow:0 0 0 4px rgba(200,164,90,.10),inset 0 1px 2px rgba(0,0,0,.04)}
+.primary,.secondary,.danger{
+  width:100%;
+  border-radius:15px;
+  padding:14px;
+  font-weight:950;
+  margin-top:13px;
+  transition:.18s ease;
+}
+.primary{
+  border:1px solid rgba(255,255,255,.70);
+  color:#171717;
+  background:linear-gradient(180deg,#f6df9d,#c89f50 52%,#a77b2d);
+  box-shadow:0 12px 26px rgba(117,83,26,.22),inset 0 1px 0 rgba(255,255,255,.65);
+}
+.secondary{color:var(--text);background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.08));border:1px solid var(--line-dark)}
+.danger{background:transparent;color:var(--danger);border:1px solid rgba(159,57,69,.26)}
+.primary:hover,.secondary:hover,.action:hover,.nav button:hover,.cta-book:hover{transform:translateY(-2px)}
+.status{margin-top:15px;padding:12px;border:1px solid var(--line-dark);border-radius:12px;color:var(--muted);background:rgba(255,255,255,.12);white-space:pre-wrap;font-size:13px}
 
-    /* LOGIN */
+/* APP */
+#appView{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+.sidebar{
+  position:sticky;top:0;height:100vh;padding:24px 17px 18px;
+  border-right:1px solid var(--line-dark);
+  background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.13));
+  backdrop-filter:blur(28px) saturate(1.15);
+  display:flex;flex-direction:column;
+  box-shadow:10px 0 40px rgba(40,44,50,.05);
+}
+body[data-theme="black"] .sidebar{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012))}
+.sidebar .brand{padding:4px 9px 0;margin-bottom:28px}
+.sidebar .brand-mark{width:36px;height:36px;border-radius:12px}
+.sidebar .brand-word{font-size:23px}
+.nav{display:flex;flex-direction:column;gap:7px;flex:1}
+.nav button{
+  position:relative;border:1px solid transparent;background:transparent;color:var(--muted);
+  text-align:left;padding:13px 14px 13px 42px;border-radius:14px;font-weight:850;transition:.18s ease;
+}
+.nav button::before{
+  content:"";position:absolute;left:15px;top:50%;width:9px;height:9px;transform:translateY(-50%);
+  border:1px solid var(--silver);border-radius:50%;box-shadow:0 0 0 3px rgba(184,190,197,.08);
+}
+.nav button.active{
+  color:var(--text);
+  border-color:rgba(255,255,255,.45);
+  background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(200,164,90,.10));
+  box-shadow:0 9px 22px rgba(44,46,51,.08),inset 0 1px 0 rgba(255,255,255,.62);
+}
+.nav button.active::before{border:0;background:linear-gradient(180deg,var(--gold-hi),var(--gold));box-shadow:0 0 0 4px rgba(200,164,90,.14)}
+.theme-panel{border-top:1px solid var(--line-dark);padding-top:15px;margin-top:14px}
+.theme-label{font-size:10px;color:var(--muted);font-weight:950;text-transform:uppercase;letter-spacing:.12em;margin:0 0 9px 4px}
+.theme-switch{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px}
+.theme-switch button{
+  height:31px;border-radius:10px;border:1px solid var(--line-dark);
+  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.07));
+  color:var(--muted);font-size:11px;font-weight:900
+}
+.theme-switch button.active{color:var(--text);border-color:rgba(200,164,90,.42);box-shadow:0 6px 14px rgba(50,50,50,.06),inset 0 1px 0 rgba(255,255,255,.5)}
+.sidebar .danger{padding:11px;font-size:13px}
 
-    #authView{
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      padding:24px;
-    }
+.main{padding:28px clamp(22px,3.4vw,52px) 52px;min-width:0}
+.topbar{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:25px}
+.eyebrow{color:#92703a;font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:1000;margin-bottom:8px}
+.topbar h1{margin:0;font-size:clamp(34px,3.2vw,50px);line-height:.96;letter-spacing:-.05em}
+.topbar p{margin:9px 0 0;color:var(--muted)}
+.userbox{
+  min-width:220px;padding:12px 15px;border:1px solid var(--line);
+  border-radius:16px;background:linear-gradient(145deg,var(--panel),var(--panel-2));
+  box-shadow:var(--shadow-md),var(--inner);text-align:right;color:var(--muted);font-size:12px
+}
+.userbox strong{display:block;color:var(--text);margin-top:3px;max-width:245px;overflow:hidden;text-overflow:ellipsis}
 
-    .auth-shell{
-      width:min(980px,100%);
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:22px;
-    }
+.section{display:none}
+.section.active{display:block;animation:fade .24s ease}
+@keyframes fade{from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none}}
+.section-title{margin-bottom:18px;display:flex;align-items:end;justify-content:space-between;gap:18px}
+.section-title h2{margin:0 0 5px;font-size:30px;letter-spacing:-.04em}
+.section-title p{color:var(--muted);margin:0}
 
-    .hero,.auth-card{
-      border:1px solid var(--line);
-      border-radius:28px;
-      background:rgba(16,22,43,.92);
-      box-shadow:0 30px 70px rgba(0,0,0,.28);
-    }
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:17px}
+.card{
+  grid-column:span 4;position:relative;overflow:hidden;
+  border:1px solid var(--line);border-radius:24px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.52),rgba(255,255,255,.10)),
+    linear-gradient(180deg,var(--panel),var(--panel-2));
+  box-shadow:var(--shadow-md),var(--inner);
+  padding:21px;min-height:158px;backdrop-filter:blur(22px) saturate(1.14);
+  transition:transform .20s ease,box-shadow .20s ease;
+}
+body[data-theme="black"] .card{
+  background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.018)),linear-gradient(180deg,var(--panel),var(--panel-2));
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 25px 55px rgba(34,38,45,.16),var(--inner)}
+.card::before{
+  content:"";position:absolute;left:0;top:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent);
+}
+.card::after{
+  content:"";position:absolute;width:130px;height:130px;border-radius:50%;right:-70px;top:-70px;
+  border:1px solid rgba(200,164,90,.20);box-shadow:0 0 0 20px rgba(200,164,90,.025)
+}
+.card h3{margin:0 0 8px;font-size:18px;letter-spacing:-.02em}
+.card p{color:var(--muted);line-height:1.5;margin:0;font-size:14px}
+.metric{font-size:40px;line-height:1;letter-spacing:-.055em;font-weight:1000;margin:13px 0 8px}
+.metric.gold{
+  background:linear-gradient(180deg,#f5df9d 0%,#c89f50 38%,#8a6227 82%,#d5b86f 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 rgba(255,255,255,.22));
+}
+.tag{
+  display:inline-block;padding:5px 9px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.40),rgba(200,164,90,.08));
+  border:1px solid rgba(200,164,90,.24);
+  color:#8c6931;font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:1000;margin-bottom:10px;
+}
+body[data-theme="black"] .tag{color:#e4c97f}
 
-    .hero{
-      padding:42px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-    }
+.full{grid-column:1/-1}.wide{grid-column:span 8}.half{grid-column:span 6}
 
-    .brand{
-      font-size:28px;
-      font-weight:1000;
-      letter-spacing:.16em;
-      margin-bottom:24px;
-    }
+.hero-dashboard{
+  grid-column:1/-1;min-height:310px;
+  display:grid;grid-template-columns:1.12fr .88fr;align-items:center;padding:34px;
+  background:
+    radial-gradient(circle at 76% 28%,rgba(200,164,90,.16),transparent 23%),
+    radial-gradient(circle at 84% 65%,rgba(255,255,255,.30),transparent 19%),
+    linear-gradient(145deg,rgba(255,255,255,.62),rgba(255,255,255,.12)),
+    linear-gradient(180deg,var(--panel),var(--panel-2));
+}
+body[data-theme="black"] .hero-dashboard{
+  background:
+    radial-gradient(circle at 76% 28%,rgba(200,164,90,.15),transparent 23%),
+    radial-gradient(circle at 84% 65%,rgba(255,255,255,.04),transparent 19%),
+    linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.015)),
+    linear-gradient(180deg,var(--panel),var(--panel-2));
+}
+.hero-dashboard h2{font-size:clamp(38px,4.4vw,64px);line-height:.93;letter-spacing:-.06em;margin:5px 0 15px;max-width:720px}
+.hero-dashboard p{max-width:650px;font-size:15px}
+.evo-orbit{
+  width:240px;height:240px;margin:auto;border-radius:50%;
+  position:relative;display:grid;place-items:center;
+  transform:perspective(700px) rotateX(10deg) rotateY(-12deg);
+  background:
+    radial-gradient(circle at 34% 28%,rgba(255,255,255,.80),transparent 12%),
+    radial-gradient(circle at 50% 50%,rgba(255,255,255,.08),rgba(0,0,0,.06));
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:
+    0 28px 55px rgba(26,29,33,.20),
+    inset 0 8px 18px rgba(255,255,255,.45),
+    inset 0 -12px 22px rgba(0,0,0,.08);
+}
+.evo-orbit::before,.evo-orbit::after{
+  content:"";position:absolute;border-radius:50%;
+  border:1px solid rgba(200,164,90,.55);
+  box-shadow:0 0 0 13px rgba(200,164,90,.04);
+}
+.evo-orbit::before{inset:25px}
+.evo-orbit::after{inset:57px;border-color:rgba(185,190,197,.52);box-shadow:0 0 0 10px rgba(185,190,197,.035)}
+.evo-core{
+  width:92px;height:92px;border-radius:28px;display:grid;place-items:center;
+  background:
+    radial-gradient(circle at 30% 20%,#fff0b5 0%,#d6b460 28%,#9a7028 63%,#efd18a 100%);
+  color:#181818;font-size:22px;font-weight:1000;letter-spacing:.06em;
+  border:1px solid rgba(255,255,255,.78);
+  box-shadow:
+    0 18px 36px rgba(91,65,20,.30),
+    inset 0 2px 3px rgba(255,255,255,.78),
+    inset 0 -8px 14px rgba(69,45,9,.20);
+  transform:rotateX(-10deg) rotateY(12deg);
+}
+.status-line{margin-top:16px;height:8px;border-radius:999px;background:rgba(127,127,127,.13);overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.06)}
+.status-line span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--silver-lo),var(--silver-hi),var(--gold-hi),var(--gold));box-shadow:0 0 12px rgba(200,164,90,.25)}
+.kpi-row{display:flex;gap:10px;margin-top:17px;flex-wrap:wrap}
+.mini-kpi{padding:9px 11px;border:1px solid var(--line-dark);border-radius:12px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.42)}
+.mini-kpi strong{color:var(--text)}
+.action{
+  margin-top:14px;display:inline-flex;align-items:center;gap:7px;padding:10px 12px;border-radius:11px;
+  border:1px solid rgba(200,164,90,.28);
+  background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(200,164,90,.08));
+  color:var(--text);font-weight:900;transition:.18s ease;
+  box-shadow:0 7px 14px rgba(45,45,45,.06),inset 0 1px 0 rgba(255,255,255,.48);
+}
+.action::after{content:"→";color:var(--gold)}
 
-    .brand span{
-      color:var(--cyan);
-    }
+.cta-book{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  margin-top:17px;padding:18px 20px;border-radius:18px;
+  color:#161616;border:1px solid rgba(255,255,255,.72);
+  background:linear-gradient(135deg,#f1dea5,#c99f51 54%,#a67b2d);
+  box-shadow:0 18px 38px rgba(114,80,25,.22),inset 0 1px 0 rgba(255,255,255,.66);
+  transition:.18s ease;
+}
+.cta-book .cta-title{font-size:18px;font-weight:1000;letter-spacing:-.02em}
+.cta-book .cta-sub{font-size:12px;opacity:.72;margin-top:2px}
+.cta-arrow{
+  width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+  background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.58);
+  font-size:20px;font-weight:1000;
+}
 
-    .hero h1{
-      font-size:52px;
-      line-height:1;
-      margin:0 0 18px;
-    }
-
-    .hero p{
-      color:var(--muted);
-      font-size:18px;
-      line-height:1.55;
-      margin:0;
-    }
-
-    .formula{
-      margin-top:28px;
-      padding:18px;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background:#0b1020;
-      color:#dfe5ff;
-      font-weight:800;
-    }
-
-    .auth-card{
-      padding:30px;
-    }
-
-    .auth-card h2{
-      font-size:28px;
-      margin:0 0 6px;
-    }
-
-    .auth-card p{
-      margin-top:0;
-      color:var(--muted);
-    }
-
-    label{
-      display:block;
-      margin:16px 0 7px;
-      font-weight:700;
-      color:#c6cce0;
-    }
-
-    input{
-      width:100%;
-      padding:14px 15px;
-      border-radius:13px;
-      border:1px solid var(--line);
-      background:#0a0f1e;
-      color:white;
-      outline:none;
-    }
-
-    input:focus{
-      border-color:var(--cyan);
-    }
-
-    .primary,.secondary,.danger{
-      width:100%;
-      border-radius:13px;
-      padding:14px;
-      border:0;
-      font-weight:900;
-      margin-top:13px;
-    }
-
-    .primary{
-      background:linear-gradient(90deg,var(--violet),var(--cyan));
-      color:#07101a;
-    }
-
-    .secondary{
-      background:#171f39;
-      color:white;
-      border:1px solid var(--line);
-    }
-
-    .danger{
-      background:#28131b;
-      color:#ffb7bf;
-      border:1px solid #5c2530;
-    }
-
-    .status{
-      margin-top:15px;
-      padding:12px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      color:var(--muted);
-      background:#0a0f1e;
-      white-space:pre-wrap;
-    }
-
-    /* DASHBOARD */
-
-    #appView{
-      min-height:100vh;
-      display:grid;
-      grid-template-columns:240px 1fr;
-    }
-
-    .sidebar{
-      position:sticky;
-      top:0;
-      height:100vh;
-      border-right:1px solid var(--line);
-      background:rgba(8,12,25,.96);
-      padding:24px 18px;
-    }
-
-    .sidebar .brand{
-      margin-bottom:30px;
-    }
-
-    .nav{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .nav button{
-      border:0;
-      background:transparent;
-      color:var(--muted);
-      text-align:left;
-      padding:13px 14px;
-      border-radius:12px;
-      font-weight:800;
-    }
-
-    .nav button:hover,
-    .nav button.active{
-      background:#151d38;
-      color:white;
-    }
-
-    .main{
-      padding:28px;
-    }
-
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      gap:20px;
-      align-items:center;
-      margin-bottom:26px;
-    }
-
-    .topbar h1{
-      margin:0;
-      font-size:32px;
-    }
-
-    .topbar p{
-      margin:5px 0 0;
-      color:var(--muted);
-    }
-
-    .userbox{
-      text-align:right;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:18px;
-    }
-
-    .card{
-      border:1px solid var(--line);
-      border-radius:20px;
-      background:linear-gradient(180deg,rgba(21,29,56,.95),rgba(11,16,32,.95));
-      padding:20px;
-      min-height:150px;
-    }
-
-    .card h3{
-      margin:0 0 8px;
-      font-size:18px;
-    }
-
-    .card p{
-      color:var(--muted);
-      line-height:1.5;
-      margin:0;
-    }
-
-    .metric{
-      font-size:34px;
-      font-weight:1000;
-      margin:12px 0 4px;
-    }
-
-    .tag{
-      display:inline-block;
-      padding:5px 9px;
-      border-radius:999px;
-      background:#0b1020;
-      border:1px solid var(--line);
-      color:var(--cyan);
-      font-size:12px;
-      font-weight:900;
-      margin-bottom:10px;
-    }
-
-    .section{
-      display:none;
-    }
-
-    .section.active{
-      display:block;
-    }
-
-    .section-title{
-      margin-bottom:18px;
-    }
-
-    .section-title h2{
-      margin:0 0 6px;
-      font-size:28px;
-    }
-
-    .section-title p{
-      color:var(--muted);
-      margin:0;
-    }
-
-    .full{
-      grid-column:1/-1;
-    }
-
-    .action{
-      margin-top:14px;
-      display:inline-block;
-      padding:10px 12px;
-      border-radius:10px;
-      border:1px solid var(--line);
-      background:#111a31;
-      color:white;
-      font-weight:800;
-    }
-
-    @media(max-width:900px){
-      .auth-shell{
-        grid-template-columns:1fr;
-      }
-
-      .hero{
-        display:none;
-      }
-
-      #appView{
-        grid-template-columns:1fr;
-      }
-
-      .sidebar{
-        position:relative;
-        height:auto;
-        border-right:0;
-        border-bottom:1px solid var(--line);
-      }
-
-      .nav{
-        flex-direction:row;
-        overflow:auto;
-      }
-
-      .grid{
-        grid-template-columns:1fr;
-      }
-
-      .main{
-        padding:18px;
-      }
-    }
-  </style>
+@media(max-width:1050px){.card{grid-column:span 6}.wide{grid-column:1/-1}}
+@media(max-width:850px){
+  .auth-shell{grid-template-columns:1fr}.hero{display:none}
+  #appView{grid-template-columns:1fr}
+  .sidebar{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line-dark)}
+  .sidebar .brand{margin-bottom:14px}.nav{flex-direction:row;overflow:auto;flex:none}
+  .nav button{padding-left:34px;white-space:nowrap}.nav button::before{left:12px}
+  .theme-panel,.sidebar .danger{display:none}
+  .hero-dashboard{grid-template-columns:1fr}.evo-orbit{margin-top:30px}
+}
+@media(max-width:620px){
+  .main{padding:20px 15px 35px}.topbar{align-items:flex-start}.userbox{display:none}
+  .card,.half,.wide{grid-column:1/-1}.hero-dashboard{padding:23px;min-height:auto}
+  .hero-dashboard h2{font-size:40px}
+  .evo-orbit{width:168px;height:168px}.evo-orbit::before{inset:20px}.evo-orbit::after{inset:43px}
+  .evo-core{width:66px;height:66px;border-radius:21px;font-size:16px}
+}
+</style>
 </head>
 
-<body>
+<body data-theme="grey">
 
-  <!-- LOGIN -->
   <section id="authView">
     <div class="auth-shell">
-
       <div class="hero">
-        <div class="brand">EV<span>OS</span></div>
+        <div class="brand"><span class="brand-mark">E</span><span class="brand-word">EV<span class="gold">OS</span></span></div>
         <h1>Tu sistema de evolución personal y profesional.</h1>
-        <p>
-          Centraliza entrenamiento, coaching, comunidad, reservas,
-          servicios, clientes y monetización en una sola plataforma.
-        </p>
-
-        <div class="formula">
-          Esencia → Estrategia → Ejecución → Evolución
-        </div>
+        <p>Centraliza entrenamiento, coaching, comunidad, reservas, servicios, clientes y monetización en una sola plataforma.</p>
+        <div class="formula">Esencia → Estrategia → Ejecución → Evolución</div>
       </div>
 
       <div class="auth-card">
+        <div class="brand"><span class="brand-mark">E</span><span class="brand-word">EV<span class="gold">OS</span></span></div>
         <h2>Entrar en EVOS</h2>
-        <p>Acceso privado conectado a Supabase.</p>
+        <p>Tu sistema operativo de evolución.</p>
 
         <label>Email</label>
         <input id="email" type="email" autocomplete="email">
@@ -399,18 +467,14 @@
 
         <button id="login" class="primary">Entrar</button>
         <button id="signup" class="secondary">Crear cuenta</button>
-
         <div id="status" class="status">Comprobando conexión…</div>
       </div>
-
     </div>
   </section>
 
-  <!-- DASHBOARD -->
   <section id="appView" class="hidden">
-
     <aside class="sidebar">
-      <div class="brand">EV<span>OS</span></div>
+      <div class="brand"><span class="brand-mark">E</span><span class="brand-word">EV<span class="gold">OS</span></span></div>
 
       <div class="nav">
         <button class="navbtn active" data-target="inicio">Inicio</button>
@@ -421,15 +485,24 @@
         <button class="navbtn" data-target="paidtime">Paid Time</button>
       </div>
 
+      <div class="theme-panel">
+        <div class="theme-label">Fondo</div>
+        <div class="theme-switch">
+          <button data-theme-btn="grey" class="active">Gris</button>
+          <button data-theme-btn="black">Negro</button>
+          <button data-theme-btn="white">Blanco</button>
+        </div>
+      </div>
+
       <button id="logout" class="danger">Cerrar sesión</button>
     </aside>
 
     <main class="main">
-
       <div class="topbar">
         <div>
+          <div class="eyebrow">Evolution Operating System</div>
           <h1>EVOS Dashboard</h1>
-          <p>Centro operativo de tu evolución.</p>
+          <p>Todo tu sistema, una sola dirección.</p>
         </div>
 
         <div class="userbox">
@@ -438,233 +511,188 @@
         </div>
       </div>
 
-      <!-- INICIO -->
       <section id="inicio" class="section active">
-
-        <div class="section-title">
-          <h2>Inicio</h2>
-          <p>Visión rápida de actividad, clientes y próximos pasos.</p>
-        </div>
-
         <div class="grid">
+          <div class="card hero-dashboard">
+            <div>
+              <span class="tag">Evolution Core</span>
+              <h2>Esencia. Estrategia. Ejecución. Evolución.</h2>
+              <p>EVOS organiza tu progreso personal, tu actividad profesional y tus ingresos en un único centro operativo.</p>
+              <div class="kpi-row">
+                <div class="mini-kpi"><strong>4</strong> áreas EVOS</div>
+                <div class="mini-kpi"><strong>6</strong> módulos activos</div>
+                <div class="mini-kpi"><strong>1</strong> sistema central</div>
+              </div>
+              <button class="cta-book" onclick="document.querySelector('[data-target=reservas]').click()">
+                <div>
+                  <div class="cta-title">Reservar una sesión</div>
+                  <div class="cta-sub">Entrenamiento · Coaching · Tarot · Masaje · Paid Time</div>
+                </div>
+                <div class="cta-arrow">→</div>
+              </button>
+            </div>
+            <div class="evo-orbit">
+              <div class="evo-core">EVOS</div>
+            </div>
+          </div>
 
           <div class="card">
             <span class="tag">Clientes</span>
-            <div class="metric">0</div>
+            <div class="metric gold">0</div>
             <p>Clientes activos conectados a EVOS.</p>
+            <div class="status-line"><span style="width:18%"></span></div>
           </div>
 
           <div class="card">
             <span class="tag">Reservas</span>
             <div class="metric">0</div>
             <p>Próximas sesiones y eventos.</p>
+            <div class="status-line"><span style="width:10%"></span></div>
           </div>
 
           <div class="card">
             <span class="tag">Ingresos</span>
-            <div class="metric">€0</div>
+            <div class="metric gold">€0</div>
             <p>Ingresos gestionados desde EVOS.</p>
+            <div class="status-line"><span style="width:6%"></span></div>
           </div>
 
-          <div class="card full">
-            <h3>Objetivo EVOS</h3>
-            <p>
-              Convertir contactos en clientes, clientes en comunidad
-              y comunidad en ingresos recurrentes.
-            </p>
+          <div class="card wide">
+            <span class="tag">Objetivo EVOS</span>
+            <h3>Convertir movimiento en evolución real</h3>
+            <p>Contactos → clientes → comunidad → ingresos recurrentes. El Dashboard será el centro para dirigir cada fase sin dispersión.</p>
           </div>
 
+          <div class="card">
+            <span class="tag">Estado</span>
+            <h3>Sistema online</h3>
+            <p>Autenticación y navegación preparadas para seguir conectando módulos.</p>
+            <div class="status-line"><span style="width:72%"></span></div>
+          </div>
         </div>
       </section>
 
-      <!-- PERFIL -->
       <section id="perfil" class="section">
-
         <div class="section-title">
-          <h2>Perfil EVOS</h2>
-          <p>Identidad, objetivos y evolución personal.</p>
+          <div><h2>Perfil EVOS</h2><p>Identidad, objetivos y evolución personal.</p></div>
         </div>
-
         <div class="grid">
-          <div class="card">
-            <h3>Datos personales</h3>
-            <p>Nombre, contacto, ubicación y preferencias.</p>
-            <button class="action">Configurar</button>
-          </div>
-
-          <div class="card">
-            <h3>Objetivos</h3>
-            <p>Físicos, mentales, emocionales y profesionales.</p>
-            <button class="action">Definir objetivos</button>
-          </div>
-
-          <div class="card">
-            <h3>Evolución</h3>
-            <p>Seguimiento del progreso general del usuario.</p>
-            <button class="action">Ver progreso</button>
-          </div>
+          <div class="card"><span class="tag">Identidad</span><h3>Datos personales</h3><p>Nombre, contacto, ubicación y preferencias.</p><button class="action">Configurar</button></div>
+          <div class="card"><span class="tag">Dirección</span><h3>Objetivos</h3><p>Físicos, mentales, emocionales y profesionales.</p><button class="action">Definir objetivos</button></div>
+          <div class="card"><span class="tag">Progreso</span><h3>Evolución</h3><p>Seguimiento global del usuario.</p><button class="action">Ver progreso</button></div>
         </div>
-
       </section>
 
-      <!-- SERVICIOS -->
       <section id="servicios" class="section">
-
         <div class="section-title">
-          <h2>Servicios</h2>
-          <p>Servicios vendibles dentro de EVOS.</p>
+          <div><h2>Servicios</h2><p>Servicios vendibles dentro de EVOS.</p></div>
         </div>
-
         <div class="grid">
-
-          <div class="card">
-            <h3>Personal Training</h3>
-            <p>Entrenamiento individual físico y funcional.</p>
-            <button class="action">Gestionar</button>
-          </div>
-
-          <div class="card">
-            <h3>Coaching</h3>
-            <p>Trabajo mental, emocional y estratégico.</p>
-            <button class="action">Gestionar</button>
-          </div>
-
-          <div class="card">
-            <h3>Tarot & Evolución</h3>
-            <p>Lecturas evolutivas, orientación y destino.</p>
-            <button class="action">Gestionar</button>
-          </div>
-
-          <div class="card">
-            <h3>Masajes</h3>
-            <p>Servicios físicos y recuperación.</p>
-            <button class="action">Gestionar</button>
-          </div>
-
-          <div class="card">
-            <h3>Clases colectivas</h3>
-            <p>Urban Pump, Urban Kombat, Urban Balance y eventos.</p>
-            <button class="action">Gestionar</button>
-          </div>
-
-          <div class="card">
-            <h3>Baile</h3>
-            <p>Zouk, conexión, musicalidad y eventos.</p>
-            <button class="action">Gestionar</button>
-          </div>
-
+          <div class="card"><span class="tag">Físico</span><h3>Personal Training</h3><p>Entrenamiento individual físico y funcional.</p><button class="action">Gestionar</button></div>
+          <div class="card"><span class="tag">Mente</span><h3>Coaching</h3><p>Trabajo mental, emocional y estratégico.</p><button class="action">Gestionar</button></div>
+          <div class="card"><span class="tag">Destino</span><h3>Tarot & Evolución</h3><p>Lecturas evolutivas, orientación y destino.</p><button class="action">Gestionar</button></div>
+          <div class="card"><span class="tag">Recovery</span><h3>Masajes</h3><p>Servicios físicos y recuperación.</p><button class="action">Gestionar</button></div>
+          <div class="card"><span class="tag">Fitness</span><h3>Clases colectivas</h3><p>Urban Pump, Urban Kombat, Urban Balance y eventos.</p><button class="action">Gestionar</button></div>
+          <div class="card"><span class="tag">Dance</span><h3>Baile</h3><p>Zouk, conexión, musicalidad y eventos.</p><button class="action">Gestionar</button></div>
         </div>
-
       </section>
 
-      <!-- COMUNIDAD -->
       <section id="comunidad" class="section">
-
         <div class="section-title">
-          <h2>Comunidad</h2>
-          <p>Gestión de grupos, usuarios, eventos y comunicación.</p>
+          <div><h2>Comunidad</h2><p>Personas, grupos, eventos y comunicación.</p></div>
         </div>
-
         <div class="grid">
-
-          <div class="card">
-            <h3>Miembros</h3>
-            <p>Usuarios y clientes conectados.</p>
-            <button class="action">Ver miembros</button>
-          </div>
-
-          <div class="card">
-            <h3>Eventos</h3>
-            <p>Masterclass, actividades y experiencias EVOS.</p>
-            <button class="action">Crear evento</button>
-          </div>
-
-          <div class="card">
-            <h3>Grupos</h3>
-            <p>Profesores, administradores, alumnos y clientes.</p>
-            <button class="action">Gestionar grupos</button>
-          </div>
-
+          <div class="card"><span class="tag">People</span><h3>Miembros</h3><p>Usuarios y clientes conectados.</p><button class="action">Ver miembros</button></div>
+          <div class="card"><span class="tag">Live</span><h3>Eventos</h3><p>Masterclass, actividades y experiencias EVOS.</p><button class="action">Crear evento</button></div>
+          <div class="card"><span class="tag">Network</span><h3>Grupos</h3><p>Profesores, administradores, alumnos y clientes.</p><button class="action">Gestionar grupos</button></div>
         </div>
-
       </section>
 
-      <!-- RESERVAS -->
       <section id="reservas" class="section">
-
         <div class="section-title">
-          <h2>Reservas</h2>
-          <p>Agenda y sesiones de clientes.</p>
+          <div><h2>Reservas</h2><p>Agenda y sesiones de clientes.</p></div>
         </div>
-
         <div class="grid">
-
-          <div class="card">
-            <h3>Nueva reserva</h3>
-            <p>Crear una nueva sesión o cita.</p>
-            <button class="action">Crear reserva</button>
+          <div class="card wide">
+            <span class="tag">Nueva reserva</span>
+            <h3>Reservar servicio</h3>
+            <p>Selecciona servicio, fecha y hora. La reserva queda vinculada a tu sesión EVOS.</p>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px">
+              <div>
+                <label>Servicio</label>
+                <select id="bookingService" style="width:100%;padding:14px;border-radius:14px;border:1px solid var(--line-dark);background:var(--panel-2);color:var(--text)">
+                  <option>Personal Training</option>
+                  <option>Coaching</option>
+                  <option>Tarot evolutivo</option>
+                  <option>Masaje</option>
+                  <option>Clase / Evento</option>
+                  <option>EVOS Paid Time</option>
+                </select>
+              </div>
+              <div>
+                <label>Fecha</label>
+                <input id="bookingDate" type="date">
+              </div>
+              <div>
+                <label>Hora</label>
+                <input id="bookingTime" type="time">
+              </div>
+              <div>
+                <label>Nota</label>
+                <input id="bookingNote" type="text" placeholder="Objetivo o detalle">
+              </div>
+            </div>
+            <button id="saveBooking" class="primary" style="max-width:260px">Confirmar reserva</button>
+            <div id="bookingStatus" class="status hidden"></div>
           </div>
-
           <div class="card">
-            <h3>Calendario</h3>
-            <p>Organización diaria, semanal y mensual.</p>
-            <button class="action">Abrir calendario</button>
+            <span class="tag">Agenda</span>
+            <h3>Próximas reservas</h3>
+            <div id="bookingList" style="margin-top:12px;color:var(--muted);font-size:14px">Todavía no hay reservas.</div>
           </div>
-
           <div class="card">
-            <h3>Pagos</h3>
-            <p>Asociar sesiones con pagos.</p>
-            <button class="action">Gestionar pagos</button>
+            <span class="tag">Money</span>
+            <h3>Conversión</h3>
+            <div class="metric gold" id="bookingCount">0</div>
+            <p>Reservas registradas en esta cuenta.</p>
           </div>
-
         </div>
-
       </section>
 
-      <!-- PAID TIME -->
       <section id="paidtime" class="section">
-
         <div class="section-title">
-          <h2>EVOS Paid Time</h2>
-          <p>Monetización del tiempo de comunicación profesional.</p>
+          <div><h2>EVOS Paid Time</h2><p>Monetización del tiempo de comunicación profesional.</p></div>
         </div>
-
         <div class="grid">
-
-          <div class="card">
-            <h3>Crear sesión</h3>
-            <p>Define duración, precio y tipo de comunicación.</p>
-            <button class="action">Crear sesión</button>
-          </div>
-
-          <div class="card">
-            <h3>Tiempo disponible</h3>
-            <div class="metric">0 min</div>
-            <p>Tiempo comprado por clientes.</p>
-          </div>
-
-          <div class="card">
-            <h3>Ingresos Paid Time</h3>
-            <div class="metric">€0</div>
-            <p>Ingresos generados por tiempo profesional.</p>
-          </div>
-
+          <div class="card"><span class="tag">Session</span><h3>Crear sesión</h3><p>Define duración, precio y tipo de comunicación.</p><button class="action">Crear sesión</button></div>
+          <div class="card"><span class="tag">Time</span><h3>Tiempo disponible</h3><div class="metric">0 min</div><p>Tiempo comprado por clientes.</p></div>
+          <div class="card"><span class="tag">Revenue</span><h3>Ingresos Paid Time</h3><div class="metric gold">€0</div><p>Ingresos generados por tiempo profesional.</p></div>
         </div>
-
       </section>
-
     </main>
-
   </section>
 
   <script>
     let sb;
-
     const $ = id => document.getElementById(id);
 
     function msg(text){
       $('status').textContent = text;
     }
+
+    function setTheme(theme){
+      document.body.dataset.theme = theme;
+      localStorage.setItem('evos-theme', theme);
+      document.querySelectorAll('[data-theme-btn]').forEach(btn=>{
+        btn.classList.toggle('active', btn.dataset.themeBtn === theme);
+      });
+    }
+
+    document.querySelectorAll('[data-theme-btn]').forEach(btn=>{
+      btn.onclick = () => setTheme(btn.dataset.themeBtn);
+    });
+
+    setTheme(localStorage.getItem('evos-theme') || 'grey');
 
     async function init(){
       try{
@@ -676,7 +704,6 @@
         }
 
         sb = supabase.createClient(c.url, c.anonKey);
-
         const { data, error } = await sb.auth.getSession();
 
         if(error) throw error;
@@ -688,7 +715,6 @@
         });
 
         msg('Conexión Supabase OK');
-
       }catch(e){
         msg('ERROR: ' + e.message);
       }
@@ -696,24 +722,18 @@
 
     function render(session){
       if(session){
-
         $('authView').classList.add('hidden');
         $('appView').classList.remove('hidden');
-
         $('user').textContent = session.user.email || session.user.id;
-
+        setTimeout(renderBookings,0);
       }else{
-
         $('authView').classList.remove('hidden');
         $('appView').classList.add('hidden');
-
       }
     }
 
     $('signup').onclick = async ()=>{
-      if(!sb){
-        return msg('Supabase todavía no está listo');
-      }
+      if(!sb) return msg('Supabase todavía no está listo');
 
       const email = $('email').value.trim();
       const password = $('password').value;
@@ -722,10 +742,7 @@
         return msg('Introduce email y contraseña.');
       }
 
-      const { data, error } = await sb.auth.signUp({
-        email,
-        password
-      });
+      const { data, error } = await sb.auth.signUp({ email, password });
 
       if(error){
         return msg('ERROR registro: ' + error.message);
@@ -733,15 +750,13 @@
 
       msg(
         data.session
-        ? 'Cuenta creada y sesión iniciada.'
-        : 'Cuenta creada. Revisa tu email si requiere confirmación.'
+          ? 'Cuenta creada y sesión iniciada.'
+          : 'Cuenta creada. Revisa tu email si requiere confirmación.'
       );
     };
 
     $('login').onclick = async ()=>{
-      if(!sb){
-        return msg('Supabase todavía no está listo');
-      }
+      if(!sb) return msg('Supabase todavía no está listo');
 
       const email = $('email').value.trim();
       const password = $('password').value;
@@ -750,32 +765,22 @@
         return msg('Introduce email y contraseña.');
       }
 
-      const { error } = await sb.auth.signInWithPassword({
-        email,
-        password
-      });
+      const { error } = await sb.auth.signInWithPassword({ email, password });
 
       msg(
         error
-        ? 'ERROR acceso: ' + error.message
-        : 'Acceso correcto.'
+          ? 'ERROR acceso: ' + error.message
+          : 'Acceso correcto.'
       );
     };
 
     $('logout').onclick = async ()=>{
-      if(sb){
-        await sb.auth.signOut();
-      }
+      if(sb) await sb.auth.signOut();
     };
 
     document.querySelectorAll('.navbtn').forEach(btn=>{
-
       btn.onclick = ()=>{
-
-        document.querySelectorAll('.navbtn').forEach(b=>{
-          b.classList.remove('active');
-        });
-
+        document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
 
         document.querySelectorAll('.section').forEach(section=>{
@@ -784,11 +789,60 @@
 
         $(btn.dataset.target).classList.add('active');
       };
-
     });
+
+    const bookingKey = () => 'evos-bookings-' + (($('user') && $('user').textContent) || 'guest');
+
+    function getBookings(){
+      try { return JSON.parse(localStorage.getItem(bookingKey()) || '[]'); }
+      catch(e){ return []; }
+    }
+
+    function renderBookings(){
+      const list = $('bookingList');
+      const count = $('bookingCount');
+      if(!list || !count) return;
+      const items = getBookings().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+      count.textContent = items.length;
+      if(!items.length){
+        list.innerHTML = 'Todavía no hay reservas.';
+        return;
+      }
+      list.innerHTML = items.slice(0,6).map((b,i)=>`
+        <div style="padding:11px 0;border-bottom:1px solid var(--line-dark)">
+          <strong style="color:var(--text)">${b.service}</strong><br>
+          ${b.date} · ${b.time}${b.note ? ' · '+b.note : ''}
+        </div>`).join('');
+    }
+
+    if($('bookingDate')){
+      $('bookingDate').min = new Date().toISOString().split('T')[0];
+    }
+
+    if($('saveBooking')){
+      $('saveBooking').onclick = ()=>{
+        const service = $('bookingService').value;
+        const date = $('bookingDate').value;
+        const time = $('bookingTime').value;
+        const note = $('bookingNote').value.trim();
+        const status = $('bookingStatus');
+
+        status.classList.remove('hidden');
+        if(!date || !time){
+          status.textContent = 'Selecciona fecha y hora.';
+          return;
+        }
+
+        const items = getBookings();
+        items.push({id:crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),service,date,time,note,createdAt:new Date().toISOString()});
+        localStorage.setItem(bookingKey(), JSON.stringify(items));
+        status.textContent = 'Reserva guardada correctamente.';
+        $('bookingNote').value = '';
+        renderBookings();
+      };
+    }
 
     init();
   </script>
-
 </body>
 </html>
