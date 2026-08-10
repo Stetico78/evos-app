@@ -2,173 +2,98 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="EVOS · Evolución física, mental, emocional y de propósito con Stefano. Coaching, fitness, baile, tarot evolutivo y astrología aplicada.">
-  <title>EVOS · Evolución integral con Stefano</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EVOS · Acceso</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root{
-      --bg:#070913;--bg2:#10152b;--card:rgba(255,255,255,.065);
-      --line:rgba(255,255,255,.12);--text:#f7f8ff;--muted:#b8bed4;
-      --violet:#a879ff;--cyan:#47dcff;--gold:#ffd36a;--green:#35e58a;
-      --shadow:0 28px 80px rgba(0,0,0,.42);--radius:24px;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);background:
-      radial-gradient(900px 500px at 15% -5%,rgba(168,121,255,.23),transparent 60%),
-      radial-gradient(900px 600px at 90% 10%,rgba(71,220,255,.16),transparent 55%),
-      linear-gradient(145deg,var(--bg2),var(--bg));min-height:100vh
-    }
-    a{color:inherit}
-    .wrap{width:min(1120px,calc(100% - 32px));margin:auto}
-    nav{position:sticky;top:0;z-index:20;background:rgba(7,9,19,.78);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
-    .navin{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-    .logo{font-weight:1000;letter-spacing:.18em;font-size:21px;text-decoration:none}
-    .logo span{background:linear-gradient(90deg,var(--violet),var(--cyan));-webkit-background-clip:text;color:transparent}
-    .links{display:flex;gap:18px;align-items:center}.links a{text-decoration:none;color:var(--muted);font-weight:700;font-size:14px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border:1px solid var(--line);
-      padding:13px 17px;border-radius:15px;font-weight:900;background:rgba(255,255,255,.06);cursor:pointer;color:var(--text)}
-    .btn.primary{background:linear-gradient(90deg,var(--violet),#6ecbff);border:0;color:#080a13;box-shadow:0 14px 34px rgba(127,125,255,.26)}
-    .btn.whatsapp{background:rgba(53,229,138,.14);border-color:rgba(53,229,138,.35)}
-    .hero{padding:84px 0 54px;display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center}
-    .eyebrow{color:var(--cyan);font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:13px}
-    h1{font-size:clamp(44px,7vw,82px);line-height:.96;margin:14px 0 22px;letter-spacing:-.055em}
-    h1 em{font-style:normal;background:linear-gradient(90deg,var(--violet),var(--cyan),var(--gold));-webkit-background-clip:text;color:transparent}
-    .lead{font-size:19px;line-height:1.65;color:var(--muted);max-width:720px}
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
-    .heroCard,.card{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.035));box-shadow:var(--shadow)}
-    .heroCard{padding:28px}
-    .orbit{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;margin:auto;max-width:330px;
-      background:radial-gradient(circle at center,rgba(255,255,255,.11),rgba(168,121,255,.12) 38%,transparent 68%);
-      border:1px solid var(--line);position:relative}
-    .orbit:before,.orbit:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.15);border-radius:50%;inset:12%}
-    .orbit:after{inset:28%;border-color:rgba(71,220,255,.25)}
-    .core{text-align:center;z-index:2}.core b{font-size:44px;letter-spacing:.14em}.core small{display:block;color:var(--muted);margin-top:8px}
-    section{padding:44px 0}.sectionHead{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
-    h2{font-size:clamp(30px,4vw,48px);margin:0;letter-spacing:-.04em}.sectionHead p{color:var(--muted);max-width:620px;line-height:1.6}
-    .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-    .service{padding:22px;min-height:230px;display:flex;flex-direction:column;transition:.2s transform,.2s border-color}
-    .service:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.28)}
-    .icon{font-size:29px}.service h3{font-size:22px;margin:18px 0 8px}.service p{color:var(--muted);line-height:1.5;font-size:14px;flex:1}
-    .service a{text-decoration:none;font-weight:900;color:var(--cyan)}
-    .method{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-    .step{padding:22px}.step b{font-size:34px;color:var(--violet)}.step h3{margin:12px 0 8px}.step p{color:var(--muted);line-height:1.55}
-    .calc{padding:28px}.calcGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    label{display:block;color:var(--muted);font-weight:800;font-size:14px;margin-bottom:7px}
-    select,input{width:100%;padding:13px;border-radius:13px;border:1px solid var(--line);background:#11162a;color:var(--text);font-size:16px}
-    .checks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.check{padding:13px;border:1px solid var(--line);border-radius:13px}
-    .check input{width:auto;margin-right:7px}.result{margin-top:16px;padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.2)}
-    .price{font-size:42px;font-weight:1000}.detail{color:var(--muted);line-height:1.6}
-    .cta{padding:34px;display:flex;align-items:center;justify-content:space-between;gap:25px}
-    footer{padding:34px 0 48px;color:var(--muted);font-size:14px}
-    @media(max-width:980px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.method{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:680px){.links a:not(.btn){display:none}.hero{padding-top:54px}.grid,.method,.calcGrid,.checks{grid-template-columns:1fr}.cta{align-items:flex-start;flex-direction:column}.heroCard{padding:18px}}
+    :root{--bg:#070913;--card:#11162a;--line:#29304a;--text:#f6f7fb;--muted:#aeb6ce;--violet:#9a72ff;--cyan:#55d8ff}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;font-family:Inter,system-ui,Arial;background:linear-gradient(145deg,#10152b,#070913);color:var(--text)}
+    .wrap{width:min(960px,calc(100% - 32px));margin:auto;padding:34px 0}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+    .logo{font-size:24px;font-weight:1000;letter-spacing:.14em}.logo span{color:var(--cyan)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.card{background:rgba(17,22,42,.92);border:1px solid var(--line);border-radius:22px;padding:24px}
+    h1{font-size:42px;margin:0 0 10px} h2{margin-top:0} p{color:var(--muted);line-height:1.55}
+    label{display:block;margin:13px 0 6px;color:var(--muted);font-weight:700} input{width:100%;padding:13px;border-radius:12px;border:1px solid var(--line);background:#0b1020;color:white}
+    button{width:100%;margin-top:14px;padding:13px;border:0;border-radius:12px;font-weight:900;cursor:pointer;background:linear-gradient(90deg,var(--violet),var(--cyan));color:#07101a}
+    button.secondary{background:#171d34;color:white;border:1px solid var(--line)}
+    .status{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:12px;color:var(--muted);white-space:pre-wrap}.hidden{display:none}
+    @media(max-width:760px){.grid{grid-template-columns:1fr}h1{font-size:34px}}
   </style>
 </head>
 <body>
-<nav>
-  <div class="wrap navin">
-    <a class="logo" href="#"><span>EVOS</span></a>
-    <div class="links">
-      <a href="#servicios">Servicios</a><a href="#metodo">Método</a><a href="#tarifas">Tarifas</a>
-      <a class="btn whatsapp" href="https://wa.me/34645772010?text=Hola%20Stefano,%20quiero%20información%20sobre%20EVOS" target="_blank">WhatsApp</a>
-    </div>
+<div class="wrap">
+  <div class="top"><div class="logo">EV<span>OS</span></div><div>Área privada</div></div>
+  <div class="grid">
+    <section class="card">
+      <h1>Entra en EVOS</h1>
+      <p>Registro, acceso y sesión conectados a Supabase.</p>
+      <label>Email</label><input id="email" type="email" autocomplete="email">
+      <label>Contraseña</label><input id="password" type="password" autocomplete="current-password">
+      <button id="login">Entrar</button>
+      <button id="signup" class="secondary">Crear cuenta</button>
+      <div id="status" class="status">Comprobando conexión…</div>
+    </section>
+
+    <section class="card">
+      <h2>Perfil EVOS</h2>
+      <div id="loggedout"><p>Cuando inicies sesión verás aquí tu usuario y podremos conectar después objetivos, servicios, comunidad, reservas y EVOS Paid Time.</p></div>
+      <div id="loggedin" class="hidden">
+        <p>Sesión activa:</p>
+        <p id="user"></p>
+        <button id="logout" class="secondary">Cerrar sesión</button>
+      </div>
+    </section>
   </div>
-</nav>
-
-<main>
-  <div class="wrap hero">
-    <div>
-      <div class="eyebrow">Evolution Essence · Inteligencia aplicada</div>
-      <h1>Evoluciona tu <em>cuerpo, mente, emoción y destino.</em></h1>
-      <p class="lead">EVOS reúne coaching emocional, entrenamiento, baile, tarot evolutivo y astrología aplicada en un método práctico para desbloquear decisiones, recuperar energía y avanzar con dirección.</p>
-      <div class="actions">
-        <a class="btn primary" href="https://wa.me/34645772010?text=Hola%20Stefano,%20quiero%20reservar%20una%20sesión%20EVOS" target="_blank">Reservar sesión</a>
-        <a class="btn" href="#servicios">Ver servicios</a>
-      </div>
-    </div>
-    <div class="heroCard">
-      <div class="orbit"><div class="core"><b>EVOS</b><small>Comprensión · Acción · Evolución</small></div></div>
-    </div>
-  </div>
-
-  <section id="servicios">
-    <div class="wrap">
-      <div class="sectionHead"><div><div class="eyebrow">Un sistema, cinco puertas</div><h2>Elige tu punto de evolución</h2></div><p>Empieza por el área que más necesita atención. El método conecta las demás para producir un cambio real y sostenible.</p></div>
-      <div class="grid">
-        <article class="card service"><div class="icon">🧭</div><h3>Coach IA</h3><p>Claridad, decisiones, objetivos y plan de acción personalizado.</p><a href="https://wa.me/34645772010?text=Quiero%20información%20sobre%20EVOS%20Coach" target="_blank">Empezar →</a></article>
-        <article class="card service"><div class="icon">⚡</div><h3>Fitness</h3><p>Fuerza, movilidad, energía y entrenamiento adaptado a tu realidad.</p><a href="https://wa.me/34645772010?text=Quiero%20información%20sobre%20EVOS%20Fitness" target="_blank">Empezar →</a></article>
-        <article class="card service"><div class="icon">💃</div><h3>Dance</h3><p>Salsa, bachata y Zouk con conexión, musicalidad y evolución técnica.</p><a href="https://wa.me/34645772010?text=Quiero%20información%20sobre%20EVOS%20Dance" target="_blank">Empezar →</a></article>
-        <article class="card service"><div class="icon">🃏</div><h3>Tarot</h3><p>Lectura evolutiva para comprender patrones, opciones y próximos pasos.</p><a href="https://wa.me/34645772010?text=Quiero%20una%20consulta%20de%20Tarot%20EVOS" target="_blank">Empezar →</a></article>
-        <article class="card service"><div class="icon">✦</div><h3>Astrología</h3><p>Mapa personal aplicado a relaciones, propósito, ciclos y decisiones.</p><a href="https://wa.me/34645772010?text=Quiero%20una%20consulta%20de%20Astrología%20EVOS" target="_blank">Empezar →</a></article>
-      </div>
-    </div>
-  </section>
-
-  <section id="metodo">
-    <div class="wrap">
-      <div class="sectionHead"><div><div class="eyebrow">Método EVOS</div><h2>De la confusión al movimiento</h2></div></div>
-      <div class="method">
-        <article class="card step"><b>01</b><h3>Diagnóstico</h3><p>Identificamos el bloqueo real, no solo el síntoma visible.</p></article>
-        <article class="card step"><b>02</b><h3>Comprensión</h3><p>Ordenamos cuerpo, mente, emoción y contexto con lógica.</p></article>
-        <article class="card step"><b>03</b><h3>Acción</h3><p>Convertimos la claridad en pasos concretos y medibles.</p></article>
-        <article class="card step"><b>04</b><h3>Evolución</h3><p>Ajustamos el proceso hasta integrar el cambio en tu vida.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section id="tarifas">
-    <div class="wrap">
-      <div class="sectionHead"><div><div class="eyebrow">Calculadora Dance</div><h2>Calcula tu tarifa</h2></div><p>Herramienta inicial para clases de baile. Las sesiones de coaching, tarot, astrología y fitness se confirman por WhatsApp.</p></div>
-      <div class="card calc">
-        <div class="calcGrid">
-          <div><label for="tipo">Tipo</label><select id="tipo"><option value="mensual">Mensual</option><option value="suelta">Clase suelta</option><option value="privada">Privada</option></select></div>
-          <div><label for="personas">Personas</label><select id="personas"><option value="1">1 persona</option><option value="2">2 personas</option></select></div>
-          <div><label for="cantidad">Modalidades</label><select id="cantidad"><option value="1">1 modalidad</option><option value="2">2 modalidades</option><option value="3">3 modalidades</option></select></div>
-        </div>
-        <div class="checks">
-          <label class="check"><input type="checkbox" class="mod" value="Salsa"> Salsa</label>
-          <label class="check"><input type="checkbox" class="mod" value="Bachata"> Bachata</label>
-          <label class="check"><input type="checkbox" class="mod" value="Zouk"> Zouk</label>
-        </div>
-        <button class="btn primary" id="calcular">Calcular</button>
-        <div class="result">
-          <div class="price" id="precio">Total: —</div>
-          <div class="detail" id="detalle">Selecciona las opciones y pulsa calcular.</div>
-          <div class="actions"><a class="btn whatsapp" id="confirmar" href="https://wa.me/34645772010" target="_blank">Confirmar por WhatsApp</a></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap">
-      <div class="card cta">
-        <div><div class="eyebrow">Primer paso</div><h2>Tu evolución necesita dirección, no más vueltas.</h2><p class="lead">Explícame brevemente qué quieres cambiar y te indicaré el punto de entrada más útil.</p></div>
-        <a class="btn primary" href="https://wa.me/34645772010?text=Hola%20Stefano,%20quiero%20empezar%20con%20EVOS.%20Mi%20objetivo%20es:" target="_blank">Hablar con Stefano</a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer><div class="wrap">© 2026 EVOS · Evolution Essence · Stefano Ticozzelli · Valencia / Online</div></footer>
-
+</div>
 <script>
-const mensual={"1":{"1":30,"2":50,"3":60},"2":{"1":50,"2":72,"3":90}};
-const tipo=document.getElementById("tipo"),personas=document.getElementById("personas"),cantidad=document.getElementById("cantidad");
-const precio=document.getElementById("precio"),detalle=document.getElementById("detalle"),confirmar=document.getElementById("confirmar");
-tipo.addEventListener("change",()=>{cantidad.disabled=tipo.value!=="mensual";if(tipo.value!=="mensual")cantidad.value="1"});
-document.getElementById("calcular").addEventListener("click",()=>{
-  const mods=[...document.querySelectorAll(".mod:checked")].map(x=>x.value);
-  let total=0,desc="";
-  if(tipo.value==="mensual"){const n=cantidad.value;if(mods.length!==Number(n)){precio.textContent="Total: —";detalle.textContent=`Selecciona exactamente ${n} modalidad(es).`;return}total=mensual[personas.value][n];desc=`Mensual · ${personas.value} persona(s) · ${mods.join(", ")}`}
-  if(tipo.value==="suelta"){if(mods.length!==1){precio.textContent="Total: —";detalle.textContent="Selecciona exactamente una modalidad.";return}total=10*Number(personas.value);desc=`Clase suelta · ${personas.value} persona(s) · ${mods[0]}`}
-  if(tipo.value==="privada"){total=(personas.value==="1"?30:60);desc=`Clase privada · ${personas.value} persona(s)${mods.length?" · "+mods.join(", "):""}`}
-  precio.textContent=`Total: ${total} €`;detalle.textContent=desc;
-  confirmar.href=`https://wa.me/34645772010?text=${encodeURIComponent("Hola Stefano, quiero confirmar: "+desc+". Total: "+total+" €")}`;
-});
+let sb;
+
+const $ = id => document.getElementById(id);
+function msg(text){ $('status').textContent = text; }
+
+async function init(){
+  try{
+    const r = await fetch('/api/config');
+    const c = await r.json();
+    if(!r.ok || !c.ok) throw new Error(c.error || 'No se pudo leer configuración');
+    sb = supabase.createClient(c.url, c.anonKey);
+    const { data, error } = await sb.auth.getSession();
+    if(error) throw error;
+    msg('Conexión Supabase OK');
+    render(data.session);
+    sb.auth.onAuthStateChange((_e, session)=>render(session));
+  }catch(e){ msg('ERROR: ' + e.message); }
+}
+
+function render(session){
+  if(session){
+    $('loggedout').classList.add('hidden');
+    $('loggedin').classList.remove('hidden');
+    $('user').textContent = session.user.email + ' · ' + session.user.id;
+  }else{
+    $('loggedout').classList.remove('hidden');
+    $('loggedin').classList.add('hidden');
+  }
+}
+
+$('signup').onclick = async ()=>{
+  if(!sb) return msg('Supabase todavía no está listo');
+  const email=$('email').value.trim(), password=$('password').value;
+  const {data,error}=await sb.auth.signUp({email,password});
+  if(error) return msg('ERROR registro: '+error.message);
+  msg(data.session ? 'Cuenta creada y sesión iniciada.' : 'Cuenta creada. Revisa tu email si Supabase exige confirmación.');
+};
+
+$('login').onclick = async ()=>{
+  if(!sb) return msg('Supabase todavía no está listo');
+  const email=$('email').value.trim(), password=$('password').value;
+  const {error}=await sb.auth.signInWithPassword({email,password});
+  msg(error ? 'ERROR acceso: '+error.message : 'Acceso correcto.');
+};
+
+$('logout').onclick = async ()=>{ if(sb){ await sb.auth.signOut(); msg('Sesión cerrada.'); } };
+
+init();
 </script>
 </body>
 </html>
