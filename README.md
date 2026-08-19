@@ -1,27 +1,34 @@
-# EVOS v1
+# EVOS
 
-Landing profesional estática para GitHub Pages.
+EVOS is a lightweight, mobile-first evolution dashboard deployed on Vercel and persisted in Supabase.
 
-## Publicación rápida
+## Active product flow
 
-1. Sustituye el archivo `index.html` del repositorio por el incluido aquí.
-2. Haz commit en la rama `main`.
-3. GitHub Pages publicará automáticamente la actualización.
+Account → EVOS Test → Evolution Profile → Recommendation → Booking → Follow-up
 
-## Incluye
+## Main routes
 
-- Presentación EVOS
-- Coach, Fitness, Dance, Tarot y Astrología
-- Método EVOS
-- Botones de WhatsApp
-- Calculadora básica de tarifas de baile
-- Diseño responsive para móvil y ordenador
+- `/` — dashboard, authentication, assessment, CRM and EVOS Assistant.
+- `/profile` — editable evolution profile, latest scores, trends, history and saved recommendations.
+- `/booking` — service catalog, new booking, rescheduling and cancellation.
+- `/api/recommend` — validated AI recommendation with a deterministic no-cost fallback.
+- `/api/config` — public Supabase client configuration.
 
-## Próxima fase
+## Architecture
 
-- Formularios reales
-- Reservas
-- Pagos
-- Área privada
-- Base de datos
-- Asistente IA
+- Static HTML/CSS/JavaScript with no build step.
+- Vercel serverless functions in `api/`.
+- Supabase Auth and Row Level Security for user-owned data.
+- Gemini is optional; EVOS continues to return useful recommendations when the model is missing or returns incomplete content.
+
+## Verification
+
+```sh
+node --test tests/recommend.test.js
+node --check api/recommend.js
+git diff --check
+```
+
+Production: <https://evos-app.vercel.app>
+
+See `EVOS_STATE.md` for the current roadmap and owner dependencies.
