@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#090a0d">
   <title>Agenda | EVOS</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/booking-rules.js"></script>
   <style>
     *{box-sizing:border-box}[hidden]{display:none!important}html{color-scheme:dark}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#3b4049 0,#14171c 34%,#07080a 72%);color:#f5f5f5}.app{width:min(1080px,94%);margin:auto;padding:28px 0 86px}.top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:22px}.logo{font-size:clamp(32px,6vw,46px);font-weight:950;letter-spacing:clamp(4px,1vw,7px);color:#ead077}.sub{color:#9ca1aa;margin-top:5px}.nav{display:flex;gap:9px;flex-wrap:wrap}.grid{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.4fr);gap:18px}.box{border:1px solid #ffffff17;background:linear-gradient(145deg,#ffffff12,#ffffff05);border-radius:20px;padding:20px;min-width:0}.gold{color:#ead077}.muted{color:#9298a2}.notice{padding:12px 14px;border:1px solid #5e512d;border-radius:12px;color:#e4cd82;margin-bottom:18px;background:#19170f}.notice.error{border-color:#743b3b;color:#ffcaca;background:#211111}label{display:grid;gap:6px;color:#b5bac3;font-size:13px;margin-bottom:11px}input,select,textarea{width:100%;padding:13px;border-radius:11px;border:1px solid #41454c;background:#101217;color:#fff;font:inherit}textarea{resize:vertical;min-height:92px}input:focus,select:focus,textarea:focus{outline:2px solid #b99a4d;outline-offset:1px}button,.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:0;border-radius:11px;padding:11px 16px;font:inherit;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#fff0a6,#c69231);color:#17120a;text-decoration:none}.secondary{background:#24272d;color:#eee;border:1px solid #555}.danger{background:#3a1717;color:#ffd6d6;border:1px solid #7a3a3a}button:disabled{opacity:.55;cursor:wait}.service-info{padding:14px;border:1px solid #403a29;border-radius:13px;background:#15140f;margin:2px 0 14px}.service-info strong{color:#ead077}.service-info small{display:block;color:#a2a7af;margin-top:5px;line-height:1.45}.timezone{font-size:12px;color:#868c96;margin:-5px 0 14px}.item{padding:15px 0;border-bottom:1px solid #30343a}.item:first-child{padding-top:3px}.item:last-child{border-bottom:0}.item-head{display:flex;justify-content:space-between;gap:12px}.item strong{color:#f0d681}.item small{display:block;color:#999;margin-top:5px}.pill{height:max-content;border:1px solid #50482e;background:#19170f;color:#ddc77d;border-radius:999px;padding:5px 8px;font-size:11px;white-space:nowrap}.pill.cancelled{border-color:#663c3c;color:#db9a9a;background:#201313}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.actions button{min-height:39px;padding:8px 11px;font-size:12px}.reschedule{margin-top:11px;padding:13px;border:1px solid #444;border-radius:12px;background:#0d0f13}.hidden{display:none!important}.empty{color:#848a94;padding:18px 0}.mobile-nav{display:none}.spinner{display:inline-block;width:14px;height:14px;border:2px solid #79652f;border-top-color:#f5dd8d;border-radius:50%;animation:spin .8s linear infinite;margin-right:7px}@keyframes spin{to{transform:rotate(360deg)}}
     @media(max-width:760px){.app{width:min(100% - 24px,1080px);padding-top:18px}.top{align-items:flex-start}.top .nav{display:none}.grid{grid-template-columns:1fr;gap:12px}.box{padding:17px;border-radius:17px}.logo{line-height:1.05}.sub{font-size:14px}.item-head{align-items:flex-start}.actions button{flex:1}.mobile-nav{position:fixed;display:grid;grid-template-columns:repeat(3,1fr);left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:20;padding:7px;border:1px solid #ffffff20;border-radius:16px;background:#101217ed;backdrop-filter:blur(14px);box-shadow:0 10px 35px #000}.mobile-nav a{display:grid;place-items:center;min-height:46px;color:#b8bdc6;text-decoration:none;font-size:12px;font-weight:750;border-radius:10px}.mobile-nav a.active{color:#17120a;background:linear-gradient(135deg,#fff0a6,#c69231)}}
@@ -46,6 +47,7 @@
     let sb;
     let user;
     let services = [];
+    let bookingItems = [];
     let bookingBusy = false;
 
     const $ = (id) => document.getElementById(id);
@@ -86,6 +88,11 @@
       return `<article class="item" id="booking-${esc(item.id)}"><div class="item-head"><div><strong>${esc(item.evos_catalog_services?.name || 'Servicio EVOS')}</strong><small>${esc(dateText(item.starts_at))}</small>${item.notes ? `<small>${esc(item.notes)}</small>` : ''}</div><span class="pill ${cancelled ? 'cancelled' : ''}">${esc(statusText[item.status] || item.status)}</span></div>${canChange ? `<div class="actions"><button class="secondary" type="button" onclick="showReschedule('${esc(item.id)}')">REPROGRAMAR</button><button class="danger" type="button" onclick="cancelBooking('${esc(item.id)}')">CANCELAR</button></div><div id="res-${esc(item.id)}" class="reschedule hidden"><label>Nueva fecha y hora<input id="new-${esc(item.id)}" type="datetime-local" min="${esc($('when').min)}"></label><button type="button" onclick="rescheduleBooking('${esc(item.id)}')">GUARDAR NUEVA FECHA</button></div>` : ''}</article>`;
     }
 
+    function conflictMessage(conflict) {
+      const serviceName = conflict?.evos_catalog_services?.name || 'otra reserva';
+      return `Ese horario coincide con ${serviceName} (${dateText(conflict.starts_at)}). Elige otra hora.`;
+    }
+
     async function loadBookings() {
       const since = new Date(Date.now() - 30 * 86400000).toISOString();
       const result = await sb.from('evos_user_bookings')
@@ -93,9 +100,10 @@
         .eq('user_id',user.id)
         .gte('starts_at',since)
         .order('starts_at',{ascending:false})
-        .limit(40);
+        .limit(100);
       if (result.error) throw result.error;
       const items = result.data || [];
+      bookingItems = items;
       const future = items.filter((item) => new Date(item.starts_at).getTime() > Date.now() && item.status !== 'cancelled').sort((a,b) => new Date(a.starts_at) - new Date(b.starts_at));
       const history = items.filter((item) => !future.includes(item)).slice(0,8);
       let html = future.length ? future.map(bookingRow).join('') : '<div class="empty">No tienes próximas reservas.</div>';
@@ -107,8 +115,12 @@
       event.preventDefault();
       if (!user || bookingBusy) return;
       const startsAt = new Date($('when').value);
-      if (!services.some((item) => item.id === $('service').value)) return setState('Selecciona un servicio disponible.', true);
+      const service = services.find((item) => item.id === $('service').value);
+      if (!service) return setState('Selecciona un servicio disponible.', true);
       if (!Number.isFinite(startsAt.getTime()) || startsAt.getTime() < Date.now() + 30 * 60000) return setState('Elige una fecha futura con al menos 30 minutos de margen.', true);
+      const conflict = EvosBookingRules.findConflict(startsAt,service.duration_minutes,bookingItems);
+      if (conflict) return setState(conflictMessage(conflict), true);
+      if (!confirm(`Confirmar ${service.name} el ${dateText(startsAt)} (${service.duration_minutes} min)?`)) return;
 
       bookingBusy = true;
       $('bookButton').disabled = true;
@@ -156,6 +168,11 @@
       const input = document.getElementById('new-' + id);
       const startsAt = new Date(input?.value);
       if (!Number.isFinite(startsAt.getTime()) || startsAt.getTime() < Date.now() + 30 * 60000) return setState('Elige una nueva fecha futura.', true);
+      const current = bookingItems.find((item) => item.id === id);
+      const duration = EvosBookingRules.bookingDuration(current);
+      const conflict = EvosBookingRules.findConflict(startsAt,duration,bookingItems,id);
+      if (conflict) return setState(conflictMessage(conflict), true);
+      if (!confirm(`Confirmar nueva fecha: ${dateText(startsAt)}?`)) return;
       try {
         const result = await sb.from('evos_user_bookings').update({starts_at:startsAt.toISOString(),status:'pending'}).eq('id',id).eq('user_id',user.id);
         if (result.error) throw result.error;
