@@ -3,7 +3,7 @@
 ## Goal
 Convert social attention into qualified EVOS users and professionals. Every profile has one clear role and sends traffic to the EVOS landing page rather than competing with the other profiles.
 
-## Profile architecture
+## Confirmed profile architecture
 
 ### EVOS — primary brand account
 Purpose: product, platform, AI guidance, community, professionals, launches and proof of progress.
@@ -22,21 +22,21 @@ Pinned content:
 2. Cómo funciona: objetivo → IA → servicio/profesional → seguimiento.
 3. Para profesionales: cómo entrar y qué aporta EVOS.
 
-### Stefano_evo — personal authority account
+### Marca personal — account handle to identify directly from Instagram
 Purpose: founder voice, lifestyle, evolution, movement, training, lessons, behind-the-scenes and trust.
 
-Display name: `Stefano · Evolution in Action`
+Display name suggestion: `Stefano · Evolution in Action`
 
 Bio:
 `Construyendo EVOS mientras evoluciono en la vida real.`
 `Cuerpo · mente · movimiento · negocio.`
 `Sigue el sistema ↓`
 
-CTA: `/landing?utm_source=instagram&utm_medium=bio&utm_campaign=stefano_evo`
+CTA campaign: `personal_founder`
 
 Content rule: show the person behind EVOS. Avoid duplicating the EVOS feed word-for-word.
 
-### Evolution Essence — transformation / wellbeing satellite
+### @evolutionessence — transformation / wellbeing satellite
 Purpose: coaching, tarot, astrology, emotional evolution and wellbeing as EVOS service categories.
 
 Display name: `Evolution Essence · EVOS`
@@ -50,7 +50,7 @@ CTA: `/landing?utm_source=instagram&utm_medium=bio&utm_campaign=evolution_essenc
 
 Content rule: educational and transformational content. Every service is framed as a possible EVOS path, not as a separate brand universe.
 
-### MZouk_dance / evolutionessence_dance — movement satellite
+### @Mzouk_dance — movement satellite
 Purpose: dance, connection, technique, community, classes and events.
 
 Display name: `EvoZouk · Dance by EVOS`
@@ -65,7 +65,7 @@ CTA: `/landing?utm_source=instagram&utm_medium=bio&utm_campaign=evos_dance`
 Content rule: dance-first visual content; connect movement, confidence, social connection and learning to the wider EVOS evolution story.
 
 ## Hourly content engine
-The hourly generator alternates between user acquisition and professional acquisition. It creates a main EVOS asset and adapted variants for the satellite profiles.
+The hourly generator alternates between user acquisition and professional acquisition. It creates a main EVOS asset and adapted variants for the confirmed satellite profiles.
 
 Suggested rotation:
 - 08:00 daily intention / question
