@@ -4,11 +4,13 @@ EVOS is a lightweight, mobile-first evolution dashboard deployed on Vercel and p
 
 ## Active product flow
 
-Account → EVOS Test → Evolution Profile → Recommendation → Booking → Follow-up
+Landing → Account → EVOS Test → Evolution Profile → Recommendation → Booking → Follow-up
 
 ## Main routes
 
+- `/landing` — public conversion landing for people and professionals, with lead capture into EVOS CRM.
 - `/` — dashboard, authentication, assessment, CRM and EVOS Assistant.
+- `/member` — private member control center.
 - `/profile` — editable evolution profile, latest scores, trends, history and saved recommendations.
 - `/booking` — service catalog, new booking, rescheduling and cancellation.
 - `/api/recommend` — validated AI recommendation with a deterministic no-cost fallback.
