@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a0d">
+<title>Empezar | EVOS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#f7f4ec;background:radial-gradient(circle at 50% -10%,#4a3215 0,#17130d 25%,#090a0d 62%,#060709 100%)}.wrap{width:min(720px,calc(100% - 28px));margin:auto;padding:26px 0 70px}.brand{font-size:38px;font-weight:950;letter-spacing:7px;background:linear-gradient(180deg,#fff,#fff0a6,#f2a832,#9c681d);-webkit-background-clip:text;color:transparent}.sub{color:#969aa2;font-size:12px;letter-spacing:2px}.card{margin-top:32px;border:1px solid #ffffff18;border-radius:26px;padding:28px;background:linear-gradient(145deg,#ffffff0d,#ffffff04);box-shadow:0 30px 80px #0007}.step{display:none}.step.active{display:block}.kicker{font-size:11px;color:#f3c66b;font-weight:900;letter-spacing:1.2px;text-transform:uppercase}.card h1{font-size:clamp(34px,7vw,54px);line-height:1.02;margin:10px 0 14px}.card p{color:#aeb0b5;line-height:1.6}.stack{display:grid;gap:11px;margin-top:22px}.btn,button{width:100%;min-height:54px;border:0;border-radius:14px;font:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#fff2b0,#efa42b);color:#191109}.google{background:#fff;color:#252525}.secondary{background:#202329;color:#eee;border:1px solid #4a4e55}.choice{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:20px}.choice button{min-height:70px;background:#17191e;color:#eee;border:1px solid #ffffff18;padding:13px}.choice button:hover,.choice button.selected{border-color:#e9b550;background:#2a2315;color:#ffe59b}.emailbox{display:none;margin-top:12px}.emailbox.open{display:grid;grid-template-columns:1fr auto;gap:8px}.emailbox input{min-width:0;padding:14px;border-radius:12px;border:1px solid #41454c;background:#0e1014;color:#fff;font:inherit}.emailbox button{width:auto;min-height:48px;padding:0 16px}.state{min-height:22px;margin-top:13px;color:#969aa2;font-size:13px}.state.error{color:#ffb2b2}.account{padding:13px;border-radius:14px;background:#ffffff07;border:1px solid #ffffff12;margin:14px 0;color:#d7d7d7}.actions{display:grid;gap:10px;margin-top:22px}.tiny{text-align:center;color:#696d75;font-size:11px;margin-top:18px}@media(max-width:560px){.card{padding:22px;border-radius:21px}.choice{grid-template-columns:1fr}.emailbox.open{grid-template-columns:1fr}.emailbox button{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/landing" style="text-decoration:none"><div class="brand">EVOS</div></a><div class="sub">ENTRAR · ELEGIR · AVANZAR</div>
+  <main class="card">
+    <section id="authStep" class="step active">
+      <div class="kicker">Paso 1 de 2</div>
+      <h1>Entra sin complicarte.</h1>
+      <p>Usa una cuenta que ya tienes. No necesitas crear otra contraseña para EVOS.</p>
+      <div class="stack">
+        <button class="google" id="googleBtn" onclick="loginGoogle()">G&nbsp; Continuar con Google</button>
+        <button class="secondary" onclick="toggleEmail()">Continuar con email</button>
+      </div>
+      <div id="emailBox" class="emailbox"><input id="email" type="email" autocomplete="email" placeholder="tu@email.com"><button onclick="loginEmail()">ENVIAR ENLACE</button></div>
+      <div id="authState" class="state">Google es la vía recomendada. El email funciona con enlace mágico, sin contraseña.</div>
+    </section>
+
+    <section id="goalStep" class="step">
+      <div class="kicker">Paso 2 de 2</div>
+      <h1>¿Qué quieres conseguir ahora?</h1>
+      <p>Elige una sola prioridad. EVOS organizará el siguiente paso; podrás cambiarla cuando quieras.</p>
+      <div id="account" class="account"></div>
+      <div class="choice" id="roleChoice">
+        <button data-role="member" class="selected" onclick="selectRole('member')">QUIERO MEJORAR YO</button>
+        <button data-role="professional" onclick="selectRole('professional')">SOY PROFESIONAL</button>
+      </div>
+      <div class="choice" id="memberGoals">
+        <button onclick="selectGoal(this,'Mejorar mi energía, cuerpo y hábitos')">Energía y cuerpo</button>
+        <button onclick="selectGoal(this,'Tener más claridad mental, foco y dirección')">Mente y foco</button>
+        <button onclick="selectGoal(this,'Gestionar mejor mis emociones y sentirme más estable')">Emociones</button>
+        <button onclick="selectGoal(this,'Mejorar mis relaciones y mi conexión con otras personas')">Relaciones</button>
+        <button onclick="selectGoal(this,'Encontrar propósito, dirección y motivación')">Propósito</button>
+        <button onclick="selectGoal(this,'Mejorar trabajo, organización e ingresos')">Trabajo y dinero</button>
+      </div>
+      <div class="choice" id="proGoals" style="display:none">
+        <button onclick="selectGoal(this,'Quiero ofrecer mis servicios profesionales dentro de EVOS')">Ofrecer mis servicios</button>
+        <button onclick="selectGoal(this,'Quiero captar y gestionar mejor clientes con EVOS')">Captar clientes</button>
+        <button onclick="selectGoal(this,'Quiero usar EVOS como sistema para organizar mi actividad profesional')">Organizar mi negocio</button>
+        <button onclick="selectGoal(this,'Quiero colaborar con EVOS y formar parte de su red profesional')">Colaborar con EVOS</button>
+      </div>
+      <div class="actions"><button id="continueBtn" disabled onclick="finishOnboarding()">CONTINUAR CON EVOS →</button></div>
+      <div id="goalState" class="state">Solo falta elegir una prioridad.</div>
+    </section>
+  </main>
+  <div class="tiny">EVOS · una sola decisión cada vez</div>
+</div>
+<script>
+let sb,user,profile={},role='member',goal='';
+const $=id=>document.getElementById(id);
+function setState(id,text,error=false){const el=$(id);el.textContent=text;el.className='state'+(error?' error':'')}
+function toggleEmail(){$('emailBox').classList.toggle('open');if($('emailBox').classList.contains('open'))$('email').focus()}
+async function init(){
+ try{
+  const r=await fetch('/api/config');const cfg=await r.json();if(!r.ok||!cfg.ok)throw new Error(cfg.error||'Configuración EVOS no disponible');
+  sb=supabase.createClient(cfg.url,cfg.anonKey);
+  const s=await sb.auth.getSession();user=s.data.session?.user||null;
+  if(user)await showGoal();
+  sb.auth.onAuthStateChange(async(event,session)=>{if(session?.user&&!user){user=session.user;await showGoal()}});
+ }catch(e){setState('authState','No se pudo iniciar EVOS: '+e.message,true)}
+}
+async function loginGoogle(){
+ if(!sb)return setState('authState','EVOS todavía está cargando. Inténtalo de nuevo.',true);
+ $('googleBtn').disabled=true;setState('authState','Abriendo Google…');
+ const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/start'}});
+ if(error){$('googleBtn').disabled=false;setState('authState','Google todavía no está disponible: '+error.message,true)}
+}
+async function loginEmail(){
+ const email=$('email').value.trim();if(!email)return setState('authState','Escribe tu email.',true);
+ setState('authState','Enviando enlace seguro…');
+ const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+'/start'}});
+ if(error)return setState('authState','No se pudo enviar el enlace: '+error.message,true);
+ setState('authState','✓ Revisa tu email y toca el enlace para entrar.');
+}
+async function showGoal(){
+ $('authStep').classList.remove('active');$('goalStep').classList.add('active');
+ const {data,error}=await sb.from('profiles').select('id,display_name,primary_goal,role,onboarding_completed').eq('id',user.id).maybeSingle();
+ if(error) return setState('goalState','No se pudo cargar tu perfil: '+error.message,true);
+ profile=data||{};role=profile.role==='professional'?'professional':'member';
+ selectRole(role);$('account').textContent='✓ '+(profile.display_name||user.user_metadata?.full_name||user.email);
+ if(profile.onboarding_completed&&profile.primary_goal){goal=profile.primary_goal;$('continueBtn').disabled=false;setState('goalState','Puedes mantener tu objetivo actual o elegir otro.');}
+}
+function selectRole(next){
+ role=next;document.querySelectorAll('#roleChoice button').forEach(b=>b.classList.toggle('selected',b.dataset.role===next));
+ $('memberGoals').style.display=next==='member'?'grid':'none';$('proGoals').style.display=next==='professional'?'grid':'none';
+ goal='';$('continueBtn').disabled=true;document.querySelectorAll('#memberGoals button,#proGoals button').forEach(b=>b.classList.remove('selected'));setState('goalState','Solo falta elegir una prioridad.');
+}
+function selectGoal(btn,value){goal=value;const scope=role==='member'?'memberGoals':'proGoals';document.querySelectorAll('#'+scope+' button').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');$('continueBtn').disabled=false;setState('goalState','✓ Perfecto. EVOS ya sabe por dónde empezar.');}
+async function finishOnboarding(){
+ if(!goal||!user)return;const btn=$('continueBtn');btn.disabled=true;btn.textContent='PREPARANDO TU GUÍA…';
+ const displayName=profile.display_name||user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||null;
+ const {error}=await sb.from('profiles').update({display_name:displayName,primary_goal:goal,role,onboarding_completed:true,updated_at:new Date().toISOString()}).eq('id',user.id);
+ if(error){btn.disabled=false;btn.textContent='CONTINUAR CON EVOS →';return setState('goalState','No se pudo guardar: '+error.message,true)}
+ location.href='/guide';
+}
+init();
+</script>
+</body>
+</html>
