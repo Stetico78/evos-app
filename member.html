@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a0d">
+<title>Mi panel | EVOS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#f5f5f5;background:radial-gradient(circle at 50% -10%,#3b4049 0,#14171c 34%,#07080a 72%)}.app{width:min(1180px,94%);margin:auto;padding:24px 0 88px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.logo{font-size:clamp(34px,6vw,52px);font-weight:950;letter-spacing:7px;background:linear-gradient(180deg,#fff,#fff0a6,#c08c24,#f7dc7b);-webkit-background-clip:text;color:transparent}.sub,.muted{color:#989ea8}.nav{display:flex;gap:8px;flex-wrap:wrap}.btn,button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:0;border-radius:11px;text-decoration:none;font-weight:850;cursor:pointer;background:linear-gradient(135deg,#fff0a6,#c69231);color:#17120a}.secondary{background:#22262c;color:#eee;border:1px solid #4c5159}.hero,.box,.metric{border:1px solid #ffffff17;background:linear-gradient(145deg,#ffffff12,#ffffff05);border-radius:20px}.hero{margin:22px 0;padding:24px;border-color:#6d5a2f}.hero h1{margin:0 0 8px;font-size:clamp(28px,5vw,44px)}.gold{color:#ead077}.badge{display:inline-flex;border:1px solid #8d7539;color:#f0d681;background:#241e10;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.metric{padding:16px}.metric b{display:block;font-size:25px;color:#ead077}.metric small{color:#8f959f}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.box{padding:20px}.box.wide{grid-column:1/-1}.box h2{margin-top:0}.notice{padding:12px 14px;border:1px solid #5e512d;border-radius:12px;color:#e4cd82;background:#19170f;margin:16px 0}.notice.error{border-color:#743b3b;color:#ffcaca;background:#211111}.item{padding:12px 0;border-bottom:1px solid #30343a}.item:last-child{border-bottom:0}.item strong{color:#ead077}.item small{display:block;color:#8f959f;margin-top:4px}.action{padding:15px;border-left:3px solid #ead077;background:#13161a;border-radius:0 12px 12px 0}.chat{height:390px;overflow:auto;padding:14px;border:1px solid #30343a;border-radius:14px;background:#080a0d}.msg{max-width:88%;padding:11px 13px;border-radius:14px;margin:8px 0;line-height:1.45;white-space:pre-wrap}.msg.bot{background:#252117;border:1px solid #65552d;color:#f1dfa6}.msg.user{margin-left:auto;background:#1e232b;border:1px solid #414854}.composer{display:grid;grid-template-columns:1fr auto;gap:9px;margin-top:10px}.composer input{width:100%;padding:13px;border-radius:11px;border:1px solid #41454c;background:#101217;color:#fff;font:inherit}.quick{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.quick button{font-size:12px}.mobile{display:none}@media(max-width:820px){.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.box.wide{grid-column:auto}.top .nav{display:none}.mobile{position:fixed;display:grid;grid-template-columns:repeat(4,1fr);left:9px;right:9px;bottom:max(9px,env(safe-area-inset-bottom));z-index:20;padding:6px;border:1px solid #ffffff20;border-radius:16px;background:#101217ef;backdrop-filter:blur(14px)}.mobile a{display:grid;place-items:center;min-height:45px;color:#c1c5cb;text-decoration:none;font-size:11px;font-weight:800}.mobile a.active{background:linear-gradient(135deg,#fff0a6,#c69231);color:#17120a;border-radius:10px}}@media(max-width:520px){.metrics{grid-template-columns:1fr 1fr}.app{width:min(100% - 22px,1180px)}.hero,.box{padding:17px}.composer{grid-template-columns:1fr}.composer button{width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div><div class="logo">EVOS</div><div class="sub">MEMBER CONTROL CENTER</div></div><nav class="nav"><a class="btn secondary" href="/">INICIO</a><a class="btn secondary" href="/profile">EVOLUCIÓN</a><a class="btn" href="/booking">AGENDA</a></nav></header>
+<div id="state" class="notice">Conectando con tu espacio privado EVOS…</div>
+<section class="hero"><span class="badge">ACCESO PRIVADO · EARLY MEMBER</span><h1 id="welcome">Tu evolución, en un solo panel.</h1><div class="muted" id="memberMeta">Cargando cuenta…</div></section>
+<section class="metrics"><div class="metric"><b id="score">—</b><small>Puntuación EVOS</small></div><div class="metric"><b id="tests">—</b><small>Tests completados</small></div><div class="metric"><b id="recs">—</b><small>Recomendaciones</small></div><div class="metric"><b id="bookings">—</b><small>Próximas reservas</small></div></section>
+<main class="grid">
+<section class="box"><h2 class="gold">Siguiente acción</h2><div id="nextAction" class="action">Analizando tu última evolución…</div><div class="quick"><a class="btn" href="/booking">RESERVAR</a><a class="btn secondary" href="/profile">VER EVOLUCIÓN</a></div></section>
+<section class="box"><h2 class="gold">Próxima sesión</h2><div id="nextBooking" class="muted">Cargando agenda…</div></section>
+<section class="box"><h2 class="gold">Tu progreso reciente</h2><div id="progress" class="muted">Cargando mediciones…</div></section>
+<section class="box"><h2 class="gold">Recomendaciones guardadas</h2><div id="saved" class="muted">Cargando recomendaciones…</div></section>
+<section class="box wide"><h2 class="gold">EVOS AI · Gestión avanzada</h2><p class="muted">La IA recibe el contexto de tu perfil, evolución reciente, recomendaciones y agenda para ayudarte a decidir el siguiente paso sin empezar de cero.</p><div class="quick"><button class="secondary" onclick="askPreset('Analiza mi situación actual y dime las 3 prioridades de esta semana.')">Prioridades</button><button class="secondary" onclick="askPreset('Convierte mi objetivo principal en un plan de 7 días con acciones concretas.')">Plan 7 días</button><button class="secondary" onclick="askPreset('Revisa mi evolución y dime qué debería reservar o hacer después.')">Siguiente paso</button></div><div id="chat" class="chat"><div class="msg bot">EVOS AI preparada. Estoy cargando tu contexto privado para poder ayudarte mejor.</div></div><div class="composer"><input id="aiInput" placeholder="Pregunta a EVOS AI…" onkeydown="if(event.key==='Enter')sendAI()"><button id="send" onclick="sendAI()">ENVIAR</button></div></section>
+</main>
+</div>
+<nav class="mobile"><a href="/">Inicio</a><a class="active" href="/member">Panel</a><a href="/profile">Evolución</a><a href="/booking">Agenda</a></nav>
+<script>
+let sb,user,profile={},assessments=[],recommendations=[],futureBookings=[];
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const labels={body:'Cuerpo',mind:'Mente',emotion:'Emoción',relationships:'Relaciones',purpose:'Propósito'};
+const fields=['body_score','mind_score','emotion_score','relationships_score','purpose_score'];
+const average=a=>{const v=fields.map(f=>Number(a?.[f])).filter(Number.isFinite);return v.length?Math.round(v.reduce((x,y)=>x+y,0)/v.length):null};
+const fmt=(d,time=false)=>new Intl.DateTimeFormat('es-ES',time?{dateStyle:'medium',timeStyle:'short'}:{dateStyle:'medium'}).format(new Date(d));
+function setError(m){$('state').className='notice error';$('state').textContent=m}
+function render(){
+ const name=profile.display_name||user.user_metadata?.full_name||user.email.split('@')[0];
+ $('welcome').textContent=`Hola, ${name}. Este es tu centro EVOS.`;
+ $('memberMeta').innerHTML=`<span class="badge">CUENTA ACTIVA</span> &nbsp; Nivel EVOS ${esc(profile.evos_level||1)} · Objetivo: ${esc(profile.primary_goal||'por definir')}`;
+ const latest=assessments[0]; $('score').textContent=average(latest)??'—'; $('tests').textContent=assessments.length; $('recs').textContent=recommendations.length; $('bookings').textContent=futureBookings.filter(b=>b.status!=='cancelled').length;
+ const rec=recommendations.find(r=>r.next_action&&r.status!=='archived')||recommendations[0];
+ $('nextAction').innerHTML=rec?`<strong>${esc(rec.title||'Prioridad EVOS')}</strong><div style="margin-top:7px">${esc(rec.next_action)}</div>`:'Completa tu Test EVOS para generar tu primera acción personalizada.';
+ const booking=futureBookings.find(b=>b.status!=='cancelled');
+ $('nextBooking').innerHTML=booking?`<div class="item"><strong>${esc(booking.evos_catalog_services?.name||'Sesión EVOS')}</strong><small>${fmt(booking.starts_at,true)} · ${esc(booking.status||'pendiente')}</small></div>`:'No tienes una próxima sesión. Puedes reservar directamente desde la agenda.';
+ $('progress').innerHTML=assessments.length?assessments.slice(0,4).map(a=>`<div class="item"><strong>${average(a)??'—'}/100</strong><small>${fmt(a.completed_at||a.created_at)} · Prioridad ${esc(labels[a.dominant_area]||'general')}</small></div>`).join(''):'Aún no hay mediciones.';
+ $('saved').innerHTML=recommendations.length?recommendations.slice(0,4).map(r=>`<div class="item"><strong>${esc(r.title||'Recomendación EVOS')}</strong><small>${esc(r.next_action||r.recommendation||'')}</small></div>`).join(''):'Aún no hay recomendaciones guardadas.';
+}
+function contextForAI(){
+ const latest=assessments[0]; const rec=recommendations[0]; const booking=futureBookings.find(b=>b.status!=='cancelled');
+ return {member:{display_name:profile.display_name||null,primary_goal:profile.primary_goal||null,evos_level:profile.evos_level||1,dominant_area:profile.dominant_area||null},latest_assessment:latest?{body:latest.body_score,mind:latest.mind_score,emotion:latest.emotion_score,relationships:latest.relationships_score,purpose:latest.purpose_score,dominant_area:latest.dominant_area,average:average(latest),date:latest.completed_at||latest.created_at}:null,latest_recommendation:rec?{title:rec.title,recommendation:rec.recommendation,next_action:rec.next_action,priority:rec.priority}:null,next_booking:booking?{service:booking.evos_catalog_services?.name||'Sesión EVOS',starts_at:booking.starts_at,status:booking.status}:null};
+}
+function addMsg(text,type){const el=document.createElement('div');el.className='msg '+type;el.textContent=text;$('chat').appendChild(el);$('chat').scrollTop=$('chat').scrollHeight}
+async function askPreset(text){$('aiInput').value=text;await sendAI()}
+async function sendAI(){
+ const input=$('aiInput'),message=input.value.trim();if(!message)return;addMsg(message,'user');input.value='';$('send').disabled=true;$('send').textContent='…';
+ try{const r=await fetch('/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,context:contextForAI(),mode:'member'})});const data=await r.json();if(!r.ok||!data.ok)throw new Error(data.error||'IA no disponible');addMsg(data.reply,'bot')}catch(e){addMsg('No pude completar el análisis: '+e.message,'bot')}finally{$('send').disabled=false;$('send').textContent='ENVIAR'}
+}
+async function init(){
+ try{
+  const c=await fetch('/api/config');const cfg=await c.json();if(!c.ok||!cfg.ok)throw new Error(cfg.error||'Configuración no disponible');sb=supabase.createClient(cfg.url,cfg.anonKey);
+  const s=await sb.auth.getSession();user=s.data.session?.user;if(!user){$('state').textContent='Necesitas iniciar sesión para acceder al panel privado.';$('welcome').textContent='Tu panel EVOS está protegido.';$('memberMeta').innerHTML='<a class="btn" href="/#auth">INICIAR SESIÓN</a>';return}
+  const [p,a,r,b]=await Promise.all([
+   sb.from('profiles').select('id,display_name,primary_goal,dominant_area,evos_level,onboarding_completed,created_at,updated_at').eq('id',user.id).maybeSingle(),
+   sb.from('assessments').select('id,body_score,mind_score,emotion_score,relationships_score,purpose_score,dominant_area,completed_at,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(12),
+   sb.from('ai_recommendations').select('id,title,recommendation,next_action,priority,status,model,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(12),
+   sb.from('evos_user_bookings').select('id,starts_at,status,notes,evos_catalog_services(name,duration_minutes,price_cents,currency)').eq('user_id',user.id).gte('starts_at',new Date().toISOString()).order('starts_at').limit(8)
+  ]);
+  for(const x of [p,a,r,b])if(x.error)throw x.error;profile=p.data||{};assessments=a.data||[];recommendations=r.data||[];futureBookings=b.data||[];render();$('state').textContent=`● Panel privado conectado · ${user.email}`;
+ }catch(e){setError('No se pudo abrir tu panel EVOS: '+e.message)}
+}
+init();
+</script>
+</body>
+</html>
