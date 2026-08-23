@@ -1,11 +1,11 @@
 # EVOS Development State
 
 ## Current level
-Level 2 — Core product construction with monetization-first priorities.
+Level 3 — Subscriber experience, intelligent operations and monetization activation.
 
 ## Completed
-- GitHub repository connected to Vercel.
-- Supabase project `evos` active.
+- GitHub repository connected to Vercel architecture.
+- Supabase project `evos` active in the application architecture.
 - EVOS Core v1 schema applied.
 - Authentication UI added to the main application.
 - EVOS assessment flow added.
@@ -16,14 +16,18 @@ Level 2 — Core product construction with monetization-first priorities.
 - User-facing service catalog and booking tables created in Supabase.
 - Recommendation API added at `/api/recommend`.
 - Recommendations can be persisted in `ai_recommendations`.
-- Empty AI responses now fall back to the EVOS rule engine.
+- Empty AI responses fall back to the EVOS rule engine.
 - Each new assessment receives its own persisted recommendation.
-- Evolution profile now includes editable goal/name, score trends, assessment history, saved recommendations and the next booking.
+- Evolution profile includes editable goal/name, score trends, assessment history, saved recommendations and the next booking.
 - Main dashboard links visibly to `/profile` and `/booking`.
 - Anonymous reads of profiles, assessments, recommendations and bookings are blocked by Supabase RLS.
+- Private member control center added at `/member`.
+- Member dashboard aggregates EVOS score, assessments, saved recommendations and future bookings.
+- EVOS AI upgraded to v0.5 and can receive current member context: goal, level, latest assessment, latest recommendation and next booking.
+- EVOS AI retains a deterministic local fallback so the member dashboard remains useful when the external model is unavailable.
 
 ## Current architecture
-Entry → Account → Assessment → Evolution Profile → Recommendation → Booking → Follow-up → Membership / Retention.
+Entry → Account → Assessment → Member Dashboard → Evolution Profile → AI Recommendation → Booking → Follow-up → Membership / Retention.
 
 ## Business direction
 EVOS must monetize while the platform is still being built. Priorities are:
@@ -35,16 +39,20 @@ EVOS must monetize while the platform is still being built. Priorities are:
 6. Professional SaaS subscription and premium visibility.
 
 ## Next technical priorities
-1. Validate the complete authenticated flow with a real test account in production.
-2. Add professional availability and an owner/admin agenda view.
-3. Add collision prevention and booking confirmation rules.
-4. Connect payments after the booking flow is validated.
-5. Add membership status and retention hooks.
-6. Internationalization: locale, country, timezone and currency by user.
-7. WhatsApp conversion and follow-up integration.
+1. Validate `/member`, `/profile`, `/booking` and EVOS AI with a real authenticated production account.
+2. Restore or connect the production Vercel project to the currently connected EVOS team so deployments and logs can be managed directly.
+3. Connect Supabase management access so subscriber status, policies and production data can be administered safely.
+4. Add persistent membership records with plan, status, renewal and entitlements.
+5. Add owner/admin subscriber dashboard with member search, status, next action and booking overview.
+6. Add professional availability and owner/admin agenda view.
+7. Add collision prevention and booking confirmation rules.
+8. Connect payments after the member and booking flow is validated.
+9. Add retention hooks, renewals and lifecycle automation.
+10. Internationalization: locale, country, timezone and currency by user.
+11. WhatsApp conversion and follow-up integration.
 
 ## Universal-platform direction
 EVOS is intended to become a universal personalized dashboard for physical, mental and emotional evolution, connecting people with professionals and services. Trust, reviews, recommendations, verified history and matching should increase connection quality. EVOS can monetize through memberships, professional subscriptions, commissions and premium visibility.
 
 ## Owner action needed
-None at this moment. Only request intervention for credentials, external authorization, cost-bearing services, or irreversible product decisions.
+Production deployment management is currently blocked because the connected Vercel team `evos` exposes no projects to the agent, while the repository documentation references `evos-app.vercel.app`. Supabase management access is also not connected to this session. Development can continue in GitHub, but production deployment/log verification and database-admin changes require those two external connections.
