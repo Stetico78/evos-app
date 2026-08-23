@@ -25,9 +25,14 @@ Level 3 — Subscriber experience, intelligent operations and monetization activ
 - Member dashboard aggregates EVOS score, assessments, saved recommendations and future bookings.
 - EVOS AI upgraded to v0.5 and can receive current member context: goal, level, latest assessment, latest recommendation and next booking.
 - EVOS AI retains a deterministic local fallback so the member dashboard remains useful when the external model is unavailable.
+- Public acquisition landing page added at `/landing` for people and professionals.
+- Landing leads reuse the existing EVOS CRM endpoint instead of creating a parallel lead store.
+- CRM lead creation now records same-origin social UTM attribution from the landing page referrer when available.
+- EVOS social operating system added under `social/EVOS_SOCIAL_SYSTEM.md` with roles, bios, content pillars, CTA rules and metrics for confirmed accounts.
+- Hourly EVOS content generation automation configured to alternate client and professional acquisition, with adaptations for `@evolutionessence`, `@Mzouk_dance` and the founder personal brand.
 
 ## Current architecture
-Entry → Account → Assessment → Member Dashboard → Evolution Profile → AI Recommendation → Booking → Follow-up → Membership / Retention.
+Social / Landing → Account → Assessment → Member Dashboard → Evolution Profile → AI Recommendation → Booking → Follow-up → Membership / Retention.
 
 ## Business direction
 EVOS must monetize while the platform is still being built. Priorities are:
@@ -39,20 +44,20 @@ EVOS must monetize while the platform is still being built. Priorities are:
 6. Professional SaaS subscription and premium visibility.
 
 ## Next technical priorities
-1. Validate `/member`, `/profile`, `/booking` and EVOS AI with a real authenticated production account.
+1. Validate `/member`, `/profile`, `/booking`, `/landing` and EVOS AI with a real authenticated production account and a real lead submission.
 2. Restore or connect the production Vercel project to the currently connected EVOS team so deployments and logs can be managed directly.
 3. Connect Supabase management access so subscriber status, policies and production data can be administered safely.
 4. Add persistent membership records with plan, status, renewal and entitlements.
 5. Add owner/admin subscriber dashboard with member search, status, next action and booking overview.
-6. Add professional availability and owner/admin agenda view.
+6. Add professional profiles, availability and owner/admin agenda view.
 7. Add collision prevention and booking confirmation rules.
 8. Connect payments after the member and booking flow is validated.
 9. Add retention hooks, renewals and lifecycle automation.
 10. Internationalization: locale, country, timezone and currency by user.
-11. WhatsApp conversion and follow-up integration.
+11. Add direct social/WhatsApp conversion and follow-up integrations when account connections are available.
 
 ## Universal-platform direction
 EVOS is intended to become a universal personalized dashboard for physical, mental and emotional evolution, connecting people with professionals and services. Trust, reviews, recommendations, verified history and matching should increase connection quality. EVOS can monetize through memberships, professional subscriptions, commissions and premium visibility.
 
 ## Owner action needed
-Production deployment management is currently blocked because the connected Vercel team `evos` exposes no projects to the agent, while the repository documentation references `evos-app.vercel.app`. Supabase management access is also not connected to this session. Development can continue in GitHub, but production deployment/log verification and database-admin changes require those two external connections.
+Production deployment management is currently blocked because the connected Vercel team `evos` exposes no projects to the agent, while the repository documentation references `evos-app.vercel.app`. Direct Instagram/Meta account control is not available through the current integrations. Supabase management access also remains an external dependency for database-admin work. Development can continue in GitHub and content generation can continue automatically, but production deploy/log verification, database-admin changes and direct social publishing require the corresponding external connections.
