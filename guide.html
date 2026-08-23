@@ -24,7 +24,7 @@
 <div id="nextAction" class="next">Tu siguiente acción aparecerá aquí.</div>
 </section>
 <div class="actions">
-<a id="primaryAction" class="btn" href="/#assessment">EMPEZAR AHORA →</a>
+<a id="primaryAction" class="btn" href="/assessment">EMPEZAR AHORA →</a>
 <button class="secondary" onclick="askAI()">PREGUNTAR A EVOS AI</button>
 </div>
 <div class="mini"><a href="/profile">Mi evolución</a><a href="/booking">Reservar</a><a href="/start">Cambiar objetivo</a></div>
@@ -35,12 +35,12 @@
 let sb,user,profile={},assessments=[],recommendations=[];
 const $=id=>document.getElementById(id);
 const fields=['body_score','mind_score','emotion_score','relationships_score','purpose_score'];
-const labels={body:'Cuerpo',mind:'Mente',emotion:'Emoción',relationships:'Relaciones',purpose:'Propósito'};
 const average=a=>{const v=fields.map(f=>Number(a?.[f])).filter(Number.isFinite);return v.length?Math.round(v.reduce((x,y)=>x+y,0)/v.length):null};
 function state(text,error=false){$('state').textContent=text;$('state').className='state'+(error?' error':'')}
 function renderGoal(){const name=profile.display_name||user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'tu';$('title').textContent=`${name}, esto es lo importante ahora.`;$('intro').textContent='EVOS reduce todo tu contexto a una prioridad y una acción concreta.';$('goal').textContent='Objetivo: '+(profile.primary_goal||'todavía no definido');}
 function renderRecommendation(rec){
- if(!rec){$('recTitle').textContent='Primero necesitamos una medición rápida';$('recText').textContent='Tu objetivo ya está guardado. El Test EVOS permite afinar la recomendación con cuerpo, mente, emoción, relaciones y propósito.';$('nextAction').textContent='Completa el Test EVOS. Después volverás aquí con una recomendación personalizada.';$('primaryAction').href='/#assessment';$('primaryAction').textContent='HACER TEST EVOS →';return}
+ if(!rec&&profile.role==='trainer'){$('recTitle').textContent='Tu acceso profesional está preparado';$('recText').textContent='No necesitas hacer un test personal para empezar. EVOS ya ha guardado que entras como profesional y cuál es tu objetivo.';$('nextAction').textContent='Abre EVOS AI para organizar tu oferta, captación o colaboración. El perfil profesional ampliado se irá activando dentro del mismo sistema.';$('primaryAction').href='/member';$('primaryAction').textContent='ABRIR MI ESPACIO EVOS →';return}
+ if(!rec){$('recTitle').textContent='Solo falta una medición rápida';$('recText').textContent='Tu objetivo ya está guardado. Responde 5 preguntas de un toque para que EVOS entienda cuerpo, mente, emoción, relaciones y propósito.';$('nextAction').textContent='Haz el Test Rápido EVOS. Son cinco decisiones y después volverás aquí con tu recomendación.';$('primaryAction').href='/assessment';$('primaryAction').textContent='HACER TEST RÁPIDO →';return}
  $('recTitle').textContent=rec.title||'Tu recomendación EVOS';$('recText').textContent=rec.recommendation||'EVOS ya ha analizado tu última medición.';$('nextAction').innerHTML='<b>Siguiente acción:</b> '+(rec.next_action||'Continúa con tu plan EVOS.');
  const t=(rec.next_action||'').toLowerCase();if(t.includes('reserv')||t.includes('sesión')||t.includes('profesional')){$('primaryAction').href='/booking';$('primaryAction').textContent='RESERVAR MI SIGUIENTE PASO →'}else{$('primaryAction').href='/member';$('primaryAction').textContent='CONTINUAR MI PLAN →'}
 }
