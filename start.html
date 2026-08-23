@@ -85,9 +85,9 @@ async function loginEmail(){
 async function showGoal(){
  $('authStep').classList.remove('active');$('goalStep').classList.add('active');
  const {data,error}=await sb.from('profiles').select('id,display_name,primary_goal,role,onboarding_completed').eq('id',user.id).maybeSingle();
- if(error) return setState('goalState','No se pudo cargar tu perfil: '+error.message,true);
- profile=data||{};role=profile.role==='professional'?'professional':'member';
- selectRole(role);$('account').textContent='✓ '+(profile.display_name||user.user_metadata?.full_name||user.email);
+ if(error)return setState('goalState','No se pudo cargar tu perfil: '+error.message,true);
+ profile=data||{};role=profile.role==='trainer'?'professional':'member';
+ selectRole(role);$('account').textContent='✓ '+(profile.display_name||user.user_metadata?.full_name||user.user_metadata?.name||user.email);
  if(profile.onboarding_completed&&profile.primary_goal){goal=profile.primary_goal;$('continueBtn').disabled=false;setState('goalState','Puedes mantener tu objetivo actual o elegir otro.');}
 }
 function selectRole(next){
@@ -99,7 +99,8 @@ function selectGoal(btn,value){goal=value;const scope=role==='member'?'memberGoa
 async function finishOnboarding(){
  if(!goal||!user)return;const btn=$('continueBtn');btn.disabled=true;btn.textContent='PREPARANDO TU GUÍA…';
  const displayName=profile.display_name||user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||null;
- const {error}=await sb.from('profiles').update({display_name:displayName,primary_goal:goal,role,onboarding_completed:true,updated_at:new Date().toISOString()}).eq('id',user.id);
+ const storedRole=(profile.role==='admin'||profile.role==='owner')?profile.role:(role==='professional'?'trainer':'client');
+ const {error}=await sb.from('profiles').update({display_name:displayName,primary_goal:goal,role:storedRole,onboarding_completed:true,updated_at:new Date().toISOString()}).eq('id',user.id);
  if(error){btn.disabled=false;btn.textContent='CONTINUAR CON EVOS →';return setState('goalState','No se pudo guardar: '+error.message,true)}
  location.href='/guide';
 }
