@@ -72,13 +72,13 @@ async function init(){
 async function loginGoogle(){
  if(!sb)return setState('authState','EVOS todavía está cargando. Inténtalo de nuevo.',true);
  $('googleBtn').disabled=true;setState('authState','Abriendo Google…');
- const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/start'}});
+ const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin}});
  if(error){$('googleBtn').disabled=false;setState('authState','Google todavía no está disponible: '+error.message,true)}
 }
 async function loginEmail(){
  const email=$('email').value.trim();if(!email)return setState('authState','Escribe tu email.',true);
  setState('authState','Enviando enlace seguro…');
- const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+'/start'}});
+ const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin}});
  if(error)return setState('authState','No se pudo enviar el enlace: '+error.message,true);
  setState('authState','✓ Revisa tu email y toca el enlace para entrar.');
 }
