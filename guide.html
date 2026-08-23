@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a0d">
+<title>Tu siguiente paso | EVOS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#f7f4ec;background:radial-gradient(circle at 50% -10%,#4a3215 0,#17130d 25%,#090a0d 62%,#060709 100%)}.wrap{width:min(760px,calc(100% - 28px));margin:auto;padding:24px 0 72px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:34px;font-weight:950;letter-spacing:7px;background:linear-gradient(180deg,#fff,#fff0a6,#f2a832,#9c681d);-webkit-background-clip:text;color:transparent}.smalllink{font-size:12px;color:#a6a8ad;text-decoration:none}.card{margin-top:26px;padding:28px;border:1px solid #ffffff18;border-radius:26px;background:linear-gradient(145deg,#ffffff0d,#ffffff04);box-shadow:0 30px 80px #0007}.kicker{font-size:11px;color:#f3c66b;font-weight:900;letter-spacing:1.2px;text-transform:uppercase}.card h1{font-size:clamp(34px,7vw,56px);line-height:1.03;margin:10px 0 14px}.muted{color:#aeb0b5;line-height:1.6}.goal{margin:18px 0;padding:15px 16px;border-radius:16px;background:#ffffff07;border:1px solid #ffffff12;color:#e7e2d7}.ai{margin-top:18px;padding:20px;border-radius:18px;border:1px solid #a77c2b66;background:radial-gradient(circle at 0 0,#8a581f28,transparent 35%),#111216}.ai h2{margin:0 0 8px;color:#f4d276;font-size:22px}.ai p{margin:8px 0;color:#d5d0c5;line-height:1.55}.next{margin-top:16px;padding:16px;border-left:3px solid #f0b647;background:#0d0f12;border-radius:0 14px 14px 0}.actions{display:grid;gap:10px;margin-top:22px}.btn,button{min-height:54px;border:0;border-radius:14px;font:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fff2b0,#efa42b);color:#191109}.secondary{background:#202329;color:#eee;border:1px solid #4a4e55}.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:22px}.mini a{padding:13px 8px;border-radius:13px;text-decoration:none;text-align:center;color:#b9bbc0;background:#ffffff06;border:1px solid #ffffff10;font-size:12px;font-weight:800}.state{margin-top:14px;color:#969aa2;font-size:13px}.state.error{color:#ffb2b2}.spinner{display:inline-block;width:15px;height:15px;border:2px solid #6a572c;border-top-color:#f3d77e;border-radius:50%;animation:s .8s linear infinite;margin-right:7px}@keyframes s{to{transform:rotate(360deg)}}@media(max-width:560px){.card{padding:22px}.mini{grid-template-columns:1fr}.top{align-items:flex-start}.smalllink{margin-top:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a href="/landing" style="text-decoration:none"><div class="brand">EVOS</div></a><a class="smalllink" href="/member">Panel completo</a></header>
+<main class="card">
+<div class="kicker">Tu guía EVOS</div>
+<h1 id="title">Un paso cada vez.</h1>
+<p id="intro" class="muted">Estoy cargando tu contexto para decidir contigo qué hacer ahora.</p>
+<div id="goal" class="goal"><span class="spinner"></span> Leyendo tu objetivo…</div>
+<section class="ai">
+<h2 id="recTitle">EVOS AI</h2>
+<p id="recText"><span class="spinner"></span> Preparando una recomendación clara…</p>
+<div id="nextAction" class="next">Tu siguiente acción aparecerá aquí.</div>
+</section>
+<div class="actions">
+<a id="primaryAction" class="btn" href="/#assessment">EMPEZAR AHORA →</a>
+<button class="secondary" onclick="askAI()">PREGUNTAR A EVOS AI</button>
+</div>
+<div class="mini"><a href="/profile">Mi evolución</a><a href="/booking">Reservar</a><a href="/start">Cambiar objetivo</a></div>
+<div id="state" class="state"></div>
+</main>
+</div>
+<script>
+let sb,user,profile={},assessments=[],recommendations=[];
+const $=id=>document.getElementById(id);
+const fields=['body_score','mind_score','emotion_score','relationships_score','purpose_score'];
+const labels={body:'Cuerpo',mind:'Mente',emotion:'Emoción',relationships:'Relaciones',purpose:'Propósito'};
+const average=a=>{const v=fields.map(f=>Number(a?.[f])).filter(Number.isFinite);return v.length?Math.round(v.reduce((x,y)=>x+y,0)/v.length):null};
+function state(text,error=false){$('state').textContent=text;$('state').className='state'+(error?' error':'')}
+function renderGoal(){const name=profile.display_name||user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'tu';$('title').textContent=`${name}, esto es lo importante ahora.`;$('intro').textContent='EVOS reduce todo tu contexto a una prioridad y una acción concreta.';$('goal').textContent='Objetivo: '+(profile.primary_goal||'todavía no definido');}
+function renderRecommendation(rec){
+ if(!rec){$('recTitle').textContent='Primero necesitamos una medición rápida';$('recText').textContent='Tu objetivo ya está guardado. El Test EVOS permite afinar la recomendación con cuerpo, mente, emoción, relaciones y propósito.';$('nextAction').textContent='Completa el Test EVOS. Después volverás aquí con una recomendación personalizada.';$('primaryAction').href='/#assessment';$('primaryAction').textContent='HACER TEST EVOS →';return}
+ $('recTitle').textContent=rec.title||'Tu recomendación EVOS';$('recText').textContent=rec.recommendation||'EVOS ya ha analizado tu última medición.';$('nextAction').innerHTML='<b>Siguiente acción:</b> '+(rec.next_action||'Continúa con tu plan EVOS.');
+ const t=(rec.next_action||'').toLowerCase();if(t.includes('reserv')||t.includes('sesión')||t.includes('profesional')){$('primaryAction').href='/booking';$('primaryAction').textContent='RESERVAR MI SIGUIENTE PASO →'}else{$('primaryAction').href='/member';$('primaryAction').textContent='CONTINUAR MI PLAN →'}
+}
+async function ensureRecommendation(){
+ const latest=assessments[0];if(!latest)return null;let rec=recommendations.find(r=>r.assessment_id===latest.id&&r.title&&r.recommendation&&r.next_action);if(rec)return rec;
+ $('recText').innerHTML='<span class="spinner"></span> EVOS está convirtiendo tu medición en una acción…';
+ const scores={body:latest.body_score,mind:latest.mind_score,emotion:latest.emotion_score,relationships:latest.relationships_score,purpose:latest.purpose_score};
+ const response=await fetch('/api/recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scores,goal:profile.primary_goal||'',dominant_area:latest.dominant_area})});const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.error||'No se pudo generar la recomendación');
+ const ins=await sb.from('ai_recommendations').insert({user_id:user.id,assessment_id:latest.id,title:result.title,recommendation:result.recommendation,next_action:result.next_action,priority:result.priority,status:'active',model:result.mode==='ai'?'gemini':'evos-rule-engine'}).select().single();if(ins.error)throw ins.error;return ins.data;
+}
+async function askAI(){
+ const q=prompt('¿Qué quieres preguntarle a EVOS?');if(!q)return;state('EVOS AI está pensando…');
+ try{const latest=assessments[0]||null,rec=recommendations[0]||null;const r=await fetch('/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,mode:'member',context:{member:{display_name:profile.display_name||null,primary_goal:profile.primary_goal||null,evos_level:profile.evos_level||1,dominant_area:profile.dominant_area||null},latest_assessment:latest?{body:latest.body_score,mind:latest.mind_score,emotion:latest.emotion_score,relationships:latest.relationships_score,purpose:latest.purpose_score,dominant_area:latest.dominant_area,average:average(latest)}:null,latest_recommendation:rec}})});const data=await r.json();if(!r.ok||!data.ok)throw new Error(data.error||'IA no disponible');alert(data.reply);state('✓ EVOS AI respondió usando tu contexto.')}catch(e){state('No pude completar la consulta: '+e.message,true)}
+}
+async function init(){
+ try{const c=await fetch('/api/config');const cfg=await c.json();if(!c.ok||!cfg.ok)throw new Error(cfg.error||'Configuración no disponible');sb=supabase.createClient(cfg.url,cfg.anonKey);const s=await sb.auth.getSession();user=s.data.session?.user;if(!user){location.replace('/start');return}
+  const [p,a,r]=await Promise.all([
+   sb.from('profiles').select('id,display_name,primary_goal,role,dominant_area,evos_level,onboarding_completed').eq('id',user.id).maybeSingle(),
+   sb.from('assessments').select('id,body_score,mind_score,emotion_score,relationships_score,purpose_score,dominant_area,completed_at,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(5),
+   sb.from('ai_recommendations').select('id,assessment_id,title,recommendation,next_action,priority,status,model,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(8)
+  ]);for(const x of [p,a,r])if(x.error)throw x.error;profile=p.data||{};assessments=a.data||[];recommendations=r.data||[];if(!profile.onboarding_completed||!profile.primary_goal){location.replace('/start');return}renderGoal();const rec=await ensureRecommendation();if(rec&&!recommendations.some(x=>x.id===rec.id))recommendations.unshift(rec);renderRecommendation(rec);state('✓ Tu guía está preparada.');
+ }catch(e){state('No se pudo preparar tu guía: '+e.message,true);$('goal').textContent='EVOS no pudo cargar tu contexto.';$('recText').textContent='Puedes volver a intentarlo desde tu acceso.';$('primaryAction').href='/start';$('primaryAction').textContent='VOLVER A EMPEZAR'}
+}
+init();
+</script>
+</body>
+</html>
