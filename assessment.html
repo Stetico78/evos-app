@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a0d">
+<title>Test rápido | EVOS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#f7f4ec;background:radial-gradient(circle at 50% -10%,#4a3215 0,#17130d 25%,#090a0d 62%,#060709 100%)}.wrap{width:min(720px,calc(100% - 28px));margin:auto;padding:24px 0 70px}.brand{font-size:34px;font-weight:950;letter-spacing:7px;background:linear-gradient(180deg,#fff,#fff0a6,#f2a832,#9c681d);-webkit-background-clip:text;color:transparent}.bar{height:6px;background:#24262b;border-radius:999px;margin:24px 0 28px;overflow:hidden}.bar i{display:block;height:100%;width:20%;background:linear-gradient(90deg,#b7761e,#ffe493);transition:width .25s ease}.card{border:1px solid #ffffff18;border-radius:26px;padding:28px;background:linear-gradient(145deg,#ffffff0d,#ffffff04);box-shadow:0 30px 80px #0007}.kicker{font-size:11px;color:#f3c66b;font-weight:900;letter-spacing:1.2px;text-transform:uppercase}.card h1{font-size:clamp(34px,7vw,54px);line-height:1.04;margin:10px 0 12px}.muted{color:#aeb0b5;line-height:1.55}.answers{display:grid;gap:9px;margin-top:22px}.answers button{min-height:54px;padding:12px 15px;border-radius:14px;border:1px solid #ffffff18;background:#17191e;color:#eee;font:inherit;font-weight:800;cursor:pointer;text-align:left}.answers button:hover{border-color:#e9b550;background:#2a2315;color:#ffe59b}.state{min-height:22px;margin-top:14px;color:#969aa2;font-size:13px}.state.error{color:#ffb2b2}.result{display:none}.result.active{display:block}.result .focus{padding:18px;border:1px solid #a77c2b66;border-radius:17px;background:#17130c;margin:18px 0;color:#f2d681}.btn{min-height:54px;border-radius:14px;text-decoration:none;display:flex;align-items:center;justify-content:center;font-weight:900;background:linear-gradient(135deg,#fff2b0,#efa42b);color:#191109;margin-top:18px}@media(max-width:560px){.card{padding:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/start" style="text-decoration:none"><div class="brand">EVOS</div></a>
+<div class="bar"><i id="progress"></i></div>
+<main class="card">
+<section id="question">
+<div id="kicker" class="kicker">1 de 5 · Cuerpo</div>
+<h1 id="title">¿Cómo está hoy tu energía física?</h1>
+<p id="description" class="muted">Piensa en energía, descanso, movimiento y cómo responde tu cuerpo en el día a día.</p>
+<div class="answers">
+<button onclick="answer(20)">Necesita mucha atención</button>
+<button onclick="answer(40)">Está bastante bajo</button>
+<button onclick="answer(60)">Está regular</button>
+<button onclick="answer(80)">Está bien</button>
+<button onclick="answer(100)">Está muy bien</button>
+</div>
+<div id="state" class="state">No hay respuestas correctas: marca cómo te sientes ahora.</div>
+</section>
+<section id="result" class="result">
+<div class="kicker">Test completado</div>
+<h1>Ya tengo una dirección.</h1>
+<p class="muted">EVOS ha guardado tu medición y usará tu objetivo junto con estas cinco áreas para proponerte el siguiente paso.</p>
+<div id="focus" class="focus"></div>
+<a class="btn" href="/guide">VER MI SIGUIENTE PASO →</a>
+</section>
+</main>
+</div>
+<script>
+let sb,user,index=0;const scores={};
+const questions=[
+ {key:'body',label:'Cuerpo',title:'¿Cómo está hoy tu energía física?',description:'Piensa en energía, descanso, movimiento y cómo responde tu cuerpo en el día a día.'},
+ {key:'mind',label:'Mente',title:'¿Cómo está tu claridad mental?',description:'Valora tu foco, capacidad de decidir y sensación de tener la mente ordenada.'},
+ {key:'emotion',label:'Emoción',title:'¿Cómo estás gestionando tus emociones?',description:'Piensa en estabilidad, estrés, calma y capacidad de recuperar equilibrio.'},
+ {key:'relationships',label:'Relaciones',title:'¿Cómo sientes tus relaciones ahora?',description:'Valora conexión, comunicación, apoyo y calidad de tus vínculos.'},
+ {key:'purpose',label:'Propósito',title:'¿Cuánta dirección sientes en tu vida?',description:'Piensa en motivación, sentido, objetivos y sensación de avanzar hacia algo importante.'}
+];
+const labels={body:'cuerpo y energía',mind:'mente y foco',emotion:'equilibrio emocional',relationships:'relaciones',purpose:'propósito y dirección'};
+const $=id=>document.getElementById(id);
+function render(){const q=questions[index];$('kicker').textContent=`${index+1} de 5 · ${q.label}`;$('title').textContent=q.title;$('description').textContent=q.description;$('progress').style.width=`${(index+1)*20}%`;}
+async function answer(value){scores[questions[index].key]=value;index++;if(index<questions.length){render();return}await save();}
+async function save(){
+ document.querySelectorAll('.answers button').forEach(b=>b.disabled=true);$('state').textContent='Guardando tu medición…';
+ try{
+  const entries=Object.entries(scores);const dominant=entries.reduce((lowest,current)=>current[1]<lowest[1]?current:lowest)[0];
+  const payload={user_id:user.id,status:'completed',answers:{mode:'quick_v1',scale:'20-100',...scores},body_score:scores.body,mind_score:scores.mind,emotion_score:scores.emotion,relationships_score:scores.relationships,purpose_score:scores.purpose,dominant_area:dominant,summary:`Test rápido EVOS · prioridad actual: ${labels[dominant]}`,completed_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+  const {error}=await sb.from('assessments').insert(payload);if(error)throw error;
+  await sb.from('profiles').update({dominant_area:dominant,updated_at:new Date().toISOString()}).eq('id',user.id);
+  $('question').style.display='none';$('result').classList.add('active');$('progress').style.width='100%';$('focus').textContent='Prioridad detectada: '+labels[dominant]+'.';
+ }catch(e){$('state').className='state error';$('state').textContent='No se pudo guardar el test: '+e.message;document.querySelectorAll('.answers button').forEach(b=>b.disabled=false);index=4;render();}
+}
+async function init(){
+ try{const c=await fetch('/api/config');const cfg=await c.json();if(!c.ok||!cfg.ok)throw new Error(cfg.error||'Configuración no disponible');sb=supabase.createClient(cfg.url,cfg.anonKey);const s=await sb.auth.getSession();user=s.data.session?.user;if(!user){location.replace('/start');return}const {data:p,error}=await sb.from('profiles').select('primary_goal,onboarding_completed').eq('id',user.id).maybeSingle();if(error)throw error;if(!p?.onboarding_completed||!p?.primary_goal){location.replace('/start');return}render();}catch(e){$('state').className='state error';$('state').textContent='No se pudo abrir el test: '+e.message}
+}
+init();
+</script>
+</body>
+</html>
