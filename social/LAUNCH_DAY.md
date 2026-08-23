@@ -1,6 +1,6 @@
 # EVOS — Launch Day Social Content
 
-Objetivo: mantener actividad cada hora sin saturar el feed. Los Reels y posts fuertes generan alcance; Stories, encuestas y microcontenidos mantienen conversación y recogen señales de intención.
+Objetivo: mantener actividad durante el día sin saturar el feed. Los Reels y posts fuertes generan alcance; Stories, encuestas y microcontenidos mantienen conversación y recogen intención.
 
 ## 08:00 — Story · intención del día
 **Texto:** ¿Qué área de tu vida necesita evolucionar primero hoy?
@@ -10,7 +10,7 @@ Encuesta: `Cuerpo / Mente / Emoción / Relaciones`
 CTA: `Responde. EVOS empieza escuchando.`
 
 ## 09:00 — Reel · qué es EVOS
-**Gancho en pantalla:** `No necesitas otra app. Necesitas dirección.`
+**Gancho:** `No necesitas otra app. Necesitas dirección.`
 
 **Guion 20s:**
 1. Demasiados consejos. Demasiadas apps. Demasiados profesionales sin conexión entre sí.
@@ -21,7 +21,7 @@ CTA: `Responde. EVOS empieza escuchando.`
 **Caption:**
 No queremos darte más ruido. Queremos ayudarte a pasar de “quiero cambiar” a “sé qué hacer ahora”. EVOS conecta orientación inteligente, seguimiento y profesionales dentro de un mismo recorrido.
 
-**CTA:** `Descubre EVOS → /landing?utm_source=instagram&utm_medium=reel&utm_campaign=launch_what_is_evos`
+**CTA:** `/landing?utm_source=instagram&utm_medium=reel&utm_campaign=launch_what_is_evos`
 
 ## 10:00 — Story · diagnóstico
 **Texto:** Si pudieras mejorar UNA cosa en los próximos 30 días, ¿cuál sería?
@@ -30,10 +30,10 @@ Sticker: pregunta abierta.
 
 CTA: `Tu respuesta puede convertirse en tu primer objetivo EVOS.`
 
-## 11:00 — Carrusel/post · cómo funciona
+## 11:00 — Carrusel · cómo funciona
 **Portada:** `De objetivo a acción en 4 pasos.`
 
-Slides/conceptos:
+Slides:
 1. Cuéntanos dónde estás.
 2. EVOS ordena la información.
 3. Recibes un siguiente paso.
@@ -49,16 +49,14 @@ CTA: `Empieza por tu objetivo.`
 
 Segunda pantalla: `EVOS está construyendo una red donde el usuario llega con contexto, objetivo y seguimiento.`
 
-CTA: `Escribe PROFESIONAL o entra en /landing?utm_source=instagram&utm_medium=story&utm_campaign=pro_launch`
+CTA: `/landing?utm_source=instagram&utm_medium=story&utm_campaign=pro_launch`
 
 ## 13:00 — Reel entretenido · problema reconocible
 **Gancho:** `POV: tienes 12 apps para “mejorar tu vida” y ninguna sabe qué estás haciendo en las otras 11.`
 
-**Secuencia:** cortes rápidos de móvil / notas / calendario / búsquedas / mensajes → pantalla limpia EVOS.
+**Secuencia:** móvil / notas / calendario / búsquedas / mensajes → pantalla limpia EVOS.
 
 **Cierre:** `Una sola evolución. Un solo contexto.`
-
-CTA: `EVOS.`
 
 ## 14:00 — Story · microacción
 **Texto:** Mini-reto EVOS: escribe una acción que puedas completar en 10 minutos y que mejore tu día un 1%.
@@ -67,21 +65,19 @@ Sticker: `La mía es…`
 
 CTA: `Evolución > perfección.`
 
-## 15:00 — Story/Reel corto · build in public
+## 15:00 — Story/Reel · build in public
 **Texto principal:** `Estamos construyendo EVOS mientras lo usamos para mejorar EVOS.`
 
-Contenido: captura limpia o grabación del dashboard/landing, sin datos personales.
+Contenido: captura limpia del dashboard o landing, sin datos personales.
 
 CTA: `Sigue el proceso. No solo el resultado.`
 
 ## 16:00 — Story · Evolution Essence
-Adaptación para `@evolutionessence`.
-
 **Texto:** Entenderte es útil. Convertir lo que entiendes en una acción es evolución.
 
 Segunda pantalla: `Coaching · Tarot · Astrología · Bienestar pueden ser herramientas dentro de un camino, no compartimentos aislados.`
 
-CTA UTM: `/landing?utm_source=instagram&utm_medium=story&utm_campaign=evolution_essence`
+CTA: `/landing?utm_source=instagram&utm_medium=story&utm_campaign=evolution_essence`
 
 ## 17:00 — Story · comunidad
 **Encuesta:** ¿Preferirías que EVOS te ayude primero a…
@@ -90,7 +86,7 @@ CTA UTM: `/landing?utm_source=instagram&utm_medium=story&utm_campaign=evolution_
 
 Segunda pantalla: `Estamos diseñando ambas cosas para trabajar juntas.`
 
-## 18:00 — Reel/post · servicio real
+## 18:00 — Reel/post · humano + IA
 **Gancho:** `La IA no tiene que sustituir a una persona. Tiene que ayudarte a llegar a la persona adecuada con más claridad.`
 
 **Caption:**
@@ -98,16 +94,14 @@ EVOS combina lo mejor de los dos mundos: orientación digital cuando basta y con
 
 CTA: `Personas + profesionales → EVOS.`
 
-## 19:00 — Story/Reel · movimiento
-Adaptación para `@Mzouk_dance`.
+## 19:00 — Story/Reel · cuerpo y movimiento
+**Gancho:** `Evolucionar también se entrena.`
 
-**Gancho:** `Evolucionar también se entrena bailando.`
+**Vídeo:** entrenamiento, movimiento, respiración, coordinación o una acción física sencilla.
 
-**Vídeo:** conexión, paso sencillo, sonrisa o dinámica social.
+**Texto:** Energía. Coordinación. Confianza. Disciplina. Tu cuerpo también forma parte de una evolución completa.
 
-**Texto:** Movimiento. Coordinación. Confianza. Conexión. Comunidad. El baile también forma parte de una evolución completa.
-
-CTA UTM: `/landing?utm_source=instagram&utm_medium=reel&utm_campaign=evos_dance`
+CTA: `/landing?utm_source=instagram&utm_medium=reel&utm_campaign=body_movement`
 
 ## 20:00 — Post profesional · captación
 **Titular:** `EVOS busca profesionales que quieran evolucionar también la experiencia del cliente.`
@@ -140,7 +134,7 @@ CTA: `/landing?utm_source=instagram&utm_medium=story&utm_campaign=daily_close`
 ---
 
 ## Publicación recomendada
-- Feed/Reels: 09:00, 13:00, 18:00 y 20:00 como máximo; si el alcance cae, reducir a 2–3 piezas fuertes.
+- Feed/Reels: 09:00, 13:00, 18:00 y 20:00 como máximo; reducir a 2–3 piezas fuertes si el alcance cae.
 - Stories/interacción: resto de franjas.
-- No repetir exactamente el mismo copy en `@evolutionessence` y `@Mzouk_dance`; adaptar al contexto de cada comunidad.
-- Reutilizar los mejores Reels en Facebook/TikTok con apertura específica de plataforma.
+- Adaptar el copy para Evolution Essence y la cuenta personal; no duplicar literalmente el post EVOS.
+- Reutilizar los mejores Reels en Facebook y TikTok con apertura específica de plataforma.
