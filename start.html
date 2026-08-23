@@ -65,7 +65,7 @@ async function init(){
   const r=await fetch('/api/config');const cfg=await r.json();if(!r.ok||!cfg.ok)throw new Error(cfg.error||'Configuración EVOS no disponible');
   sb=supabase.createClient(cfg.url,cfg.anonKey);
   const s=await sb.auth.getSession();user=s.data.session?.user||null;
-  if(user)await showGoal();
+  if(user){if(location.hash==='#assessment'){location.replace('/assessment');return}await showGoal()}
   sb.auth.onAuthStateChange(async(event,session)=>{if(session?.user&&!user){user=session.user;await showGoal()}});
  }catch(e){setState('authState','No se pudo iniciar EVOS: '+e.message,true)}
 }
