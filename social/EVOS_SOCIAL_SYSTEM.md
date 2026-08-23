@@ -1,12 +1,12 @@
 # EVOS Social Operating System
 
 ## Goal
-Convert social attention into qualified EVOS users and professionals. Every profile has one clear role and sends traffic to the EVOS landing page rather than competing with the other profiles.
+Convert social attention into qualified EVOS users and professionals. EVOS is the central brand; every other active profile supports the same ecosystem and points to the EVOS landing page instead of competing with it.
 
-## Confirmed profile architecture
+## Profile architecture
 
 ### EVOS — primary brand account
-Purpose: product, platform, AI guidance, community, professionals, launches and proof of progress.
+Purpose: product, platform, AI guidance, community, professional network, launches and proof of progress.
 
 Display name: `EVOS · Evolution Operating System`
 
@@ -22,7 +22,7 @@ Pinned content:
 2. Cómo funciona: objetivo → IA → servicio/profesional → seguimiento.
 3. Para profesionales: cómo entrar y qué aporta EVOS.
 
-### Marca personal — account handle to identify directly from Instagram
+### Founder / personal account
 Purpose: founder voice, lifestyle, evolution, movement, training, lessons, behind-the-scenes and trust.
 
 Display name suggestion: `Stefano · Evolution in Action`
@@ -32,40 +32,35 @@ Bio:
 `Cuerpo · mente · movimiento · negocio.`
 `Sigue el sistema ↓`
 
-CTA campaign: `personal_founder`
+CTA: `/landing?utm_source=instagram&utm_medium=bio&utm_campaign=founder`
 
-Content rule: show the person behind EVOS. Avoid duplicating the EVOS feed word-for-word.
+Content rule: show the person behind EVOS. Do not duplicate the EVOS feed word-for-word.
 
-### @evolutionessence — transformation / wellbeing satellite
+### Evolution Essence — transformation / wellbeing satellite
 Purpose: coaching, tarot, astrology, emotional evolution and wellbeing as EVOS service categories.
 
-Display name: `Evolution Essence · EVOS`
+Display name: `Evolution Essence · by EVOS`
 
 Bio:
 `Coaching · Tarot · Astrología · Bienestar.`
 `Herramientas para entenderte y avanzar.`
-`Ahora dentro del ecosistema EVOS ↓`
+`Tu siguiente paso dentro de EVOS ↓`
 
 CTA: `/landing?utm_source=instagram&utm_medium=bio&utm_campaign=evolution_essence`
 
-Content rule: educational and transformational content. Every service is framed as a possible EVOS path, not as a separate brand universe.
+Content rule: educational and transformational content. Frame each service as a possible EVOS path, not as a separate brand universe.
 
-### @Mzouk_dance — movement satellite
-Purpose: dance, connection, technique, community, classes and events.
+## Other active profiles
+Do not create parallel brand strategies by default. When an additional active account is identified, assign it one of these roles before publishing:
+- authority / founder
+- service-category satellite
+- local/community acquisition
+- professional acquisition
 
-Display name: `EvoZouk · Dance by EVOS`
-
-Bio:
-`Salsa · Bachata · Zouk · conexión.`
-`Aprende, practica y evoluciona bailando.`
-`Clases y comunidad dentro de EVOS ↓`
-
-CTA: `/landing?utm_source=instagram&utm_medium=bio&utm_campaign=evos_dance`
-
-Content rule: dance-first visual content; connect movement, confidence, social connection and learning to the wider EVOS evolution story.
+Every active account must have one audience, one content promise and one primary CTA to EVOS.
 
 ## Hourly content engine
-The hourly generator alternates between user acquisition and professional acquisition. It creates a main EVOS asset and adapted variants for the confirmed satellite profiles.
+The hourly generator alternates between user acquisition and professional acquisition. It creates one main EVOS asset and adapted variants for founder and Evolution Essence.
 
 Suggested rotation:
 - 08:00 daily intention / question
@@ -79,7 +74,7 @@ Suggested rotation:
 - 16:00 transformation category content
 - 17:00 community / social proof prompt
 - 18:00 service or booking path
-- 19:00 dance / movement / energy
+- 19:00 movement / fitness / energy angle
 - 20:00 professional acquisition
 - 21:00 reflection / AI prompt
 - 22:00 CTA / waitlist / account creation
@@ -93,7 +88,7 @@ Generate every hour, but do not publish 24 feed posts per day. Use Stories and l
 4. Real professionals and service discovery.
 5. Evolution categories: body, mind, emotion, relationships, purpose.
 6. Founder/build-in-public trust.
-7. Dance and fitness as practical evolution.
+7. Fitness and movement as practical evolution.
 8. Coaching, tarot and astrology as reflective tools.
 9. Community questions, polls and challenges.
 10. Calls to action: create profile, take assessment, book, join as professional.
