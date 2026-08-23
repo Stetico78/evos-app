@@ -27,9 +27,10 @@ Level 3 — Subscriber experience, intelligent operations and monetization activ
 - EVOS AI retains a deterministic local fallback so the member dashboard remains useful when the external model is unavailable.
 - Public acquisition landing page added at `/landing` for people and professionals.
 - Landing leads reuse the existing EVOS CRM endpoint instead of creating a parallel lead store.
-- CRM lead creation now records same-origin social UTM attribution from the landing page referrer when available.
-- EVOS social operating system added under `social/EVOS_SOCIAL_SYSTEM.md` with roles, bios, content pillars, CTA rules and metrics for confirmed accounts.
-- Hourly EVOS content generation automation configured to alternate client and professional acquisition, with adaptations for `@evolutionessence`, `@Mzouk_dance` and the founder personal brand.
+- CRM lead creation records same-origin social UTM attribution from the landing page referrer when available.
+- EVOS social operating system added under `social/EVOS_SOCIAL_SYSTEM.md`: EVOS is the central brand, the founder account builds authority and Evolution Essence acts as a transformation/wellbeing satellite.
+- Launch-day social schedule added under `social/LAUNCH_DAY.md`, balancing Reels/posts with Stories and interaction rather than flooding the feed.
+- Hourly EVOS content generation automation configured to alternate client and professional acquisition, with adaptations for the founder personal brand and Evolution Essence.
 
 ## Current architecture
 Social / Landing → Account → Assessment → Member Dashboard → Evolution Profile → AI Recommendation → Booking → Follow-up → Membership / Retention.
