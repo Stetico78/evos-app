@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
+<title>EVOS Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#f4f4f2;background:radial-gradient(circle at 50% -12%,#493315 0,#17140e 25%,#090a0d 62%,#050608 100%)}.app{width:min(1320px,calc(100% - 24px));margin:auto;padding:20px 0 80px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center}.logo{font-size:clamp(34px,6vw,54px);font-weight:950;letter-spacing:7px;background:linear-gradient(180deg,#fff,#fff1af,#efa932,#8d601d);-webkit-background-clip:text;color:transparent}.sub,.muted{color:#989da6}.nav{display:flex;gap:8px;flex-wrap:wrap}.btn,button,select,input{font:inherit}.btn,button{border:0;border-radius:11px;min-height:42px;padding:10px 14px;font-weight:850;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fff0a6,#c69231);color:#17120a}.secondary{background:#22262c;color:#eee;border:1px solid #4c5159}.notice,.box,.metric{border:1px solid #ffffff18;background:linear-gradient(145deg,#ffffff11,#ffffff05);border-radius:18px}.notice{margin:18px 0;padding:12px 14px;color:#efd884;border-color:#68572e}.notice.error{color:#ffcaca;border-color:#784040}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.metric{padding:17px}.metric b{font-size:27px;color:#ecd378}.metric small{display:block;color:#8f949c;margin-top:4px}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.box{padding:18px;overflow:hidden}.box h2{margin:0 0 14px;color:#ead077}.tableWrap{overflow:auto;border:1px solid #ffffff13;border-radius:13px}table{width:100%;border-collapse:collapse;min-width:900px}th,td{text-align:left;padding:11px;border-bottom:1px solid #292c31;font-size:13px;vertical-align:middle}th{color:#d8be6d;background:#111318;position:sticky;top:0}td small{display:block;color:#858b94;margin-top:3px}.pill{display:inline-flex;border:1px solid #675a32;color:#ead077;padding:4px 8px;border-radius:999px;font-size:11px}.rowActions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}select,input{min-height:38px;border:1px solid #3e4249;border-radius:9px;background:#101217;color:#eee;padding:7px 9px}.rowActions button{min-height:38px;padding:7px 10px;font-size:12px}.booking{padding:11px 0;border-bottom:1px solid #2d3035}.booking:last-child{border-bottom:0}.booking strong{color:#ead077}.booking small{display:block;color:#8d939c;margin-top:4px}.empty{padding:20px;color:#838891;text-align:center}@media(max-width:900px){.grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start}.nav{justify-content:flex-end}}@media(max-width:520px){.metrics{grid-template-columns:1fr 1fr}.box{padding:14px}.app{width:min(100% - 16px,1320px)}.nav .hideMobile{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div><div class="logo">EVOS</div><div class="sub">OWNER CONTROL CENTER</div></div><nav class="nav"><a class="btn secondary hideMobile" href="/">INICIO</a><a class="btn secondary" href="/member">MI PANEL</a><a class="btn" href="/booking">AGENDA</a></nav></header>
+<div id="state" class="notice">Verificando acceso owner…</div>
+<section class="metrics"><div class="metric"><b id="mUsers">—</b><small>Usuarios</small></div><div class="metric"><b id="mActive">—</b><small>Suscripciones activas</small></div><div class="metric"><b id="mBookings">—</b><small>Próximas reservas</small></div><div class="metric"><b id="mPros">—</b><small>Profesionales</small></div></section>
+<main class="grid">
+<section class="box"><h2>Personas y suscripciones</h2><div class="tableWrap"><table><thead><tr><th>Persona</th><th>Rol</th><th>Plan</th><th>Estado</th><th>Renovación</th><th>Acción</th></tr></thead><tbody id="members"><tr><td colspan="6" class="empty">Cargando…</td></tr></tbody></table></div></section>
+<section class="box"><h2>Próximas reservas</h2><div id="bookingList" class="muted">Cargando agenda…</div></section>
+</main>
+</div>
+<script>
+let sb,user,members=[],plans=[],bookings=[];
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const fmt=d=>d?new Intl.DateTimeFormat('es-ES',{dateStyle:'medium',timeStyle:'short'}).format(new Date(d)):'—';
+function error(m){$('state').className='notice error';$('state').textContent=m}
+function labelRole(r){return ({owner:'Owner',admin:'Admin',trainer:'Profesional',client:'Cliente'})[r]||r||'Cliente'}
+function render(){
+ $('mUsers').textContent=members.length;
+ $('mActive').textContent=members.filter(x=>['active','trialing'].includes(x.membership_status)).length;
+ $('mBookings').textContent=bookings.filter(x=>x.status!=='cancelled').length;
+ $('mPros').textContent=members.filter(x=>x.role==='trainer').length;
+ $('members').innerHTML=members.length?members.map(m=>{
+  const roleOptions=['client','trainer','admin','owner'].map(r=>`<option value="${r}" ${m.role===r?'selected':''}>${labelRole(r)}</option>`).join('');
+  const planOptions=plans.map(p=>`<option value="${esc(p.code)}" ${m.membership_plan===p.code?'selected':''}>${esc(p.name)}</option>`).join('');
+  const currentPlan=m.membership_plan||'free', currentStatus=m.membership_status||'active';
+  return `<tr><td><strong>${esc(m.display_name||m.email||'Usuario')}</strong><small>${esc(m.email||'')} · Nivel ${esc(m.evos_level||1)}</small></td><td><select id="role-${m.user_id}">${roleOptions}</select></td><td><select id="plan-${m.user_id}">${planOptions}</select></td><td><select id="status-${m.user_id}"><option value="active" ${currentStatus==='active'?'selected':''}>Activa</option><option value="trialing" ${currentStatus==='trialing'?'selected':''}>Prueba</option><option value="paused" ${currentStatus==='paused'?'selected':''}>Pausada</option><option value="cancelled" ${currentStatus==='cancelled'?'selected':''}>Cancelada</option><option value="expired" ${currentStatus==='expired'?'selected':''}>Caducada</option></select></td><td><input id="renew-${m.user_id}" type="date" value="${m.membership_renews_at?new Date(m.membership_renews_at).toISOString().slice(0,10):''}"></td><td><div class="rowActions"><button onclick="saveMember('${m.user_id}')">GUARDAR</button></div></td></tr>`
+ }).join(''):'<tr><td colspan="6" class="empty">No hay usuarios.</td></tr>';
+ $('bookingList').innerHTML=bookings.length?bookings.slice(0,12).map(b=>{const member=members.find(m=>m.user_id===b.user_id);return `<div class="booking"><strong>${esc(b.evos_catalog_services?.name||'Sesión EVOS')}</strong><small>${esc(member?.display_name||member?.email||'Usuario')} · ${fmt(b.starts_at)} · ${esc(b.status)}</small></div>`}).join(''):'<div class="empty">No hay reservas próximas.</div>';
+}
+async function saveMember(id){
+ const role=$('role-'+id).value,plan=$('plan-'+id).value,status=$('status-'+id).value,date=$('renew-'+id).value;
+ $('state').textContent='Guardando cambios…';
+ try{
+  const a=await sb.rpc('evos_admin_set_role',{target_user:id,new_role:role});if(a.error)throw a.error;
+  const renewAt=date?new Date(date+'T23:59:59').toISOString():null;
+  const b=await sb.rpc('evos_admin_set_membership',{target_user:id,new_plan:plan,new_status:status,renew_at:renewAt});if(b.error)throw b.error;
+  await load();$('state').textContent='✓ Cambios guardados correctamente.';
+ }catch(e){error('No se pudo guardar: '+e.message)}
+}
+async function load(){
+ const [m,p,b]=await Promise.all([
+  sb.rpc('evos_admin_member_overview'),
+  sb.from('evos_plans').select('code,name,sort_order').eq('is_active',true).order('sort_order'),
+  sb.from('evos_user_bookings').select('id,user_id,starts_at,status,evos_catalog_services(name)').gte('starts_at',new Date().toISOString()).order('starts_at').limit(30)
+ ]);
+ if(m.error)throw m.error;if(p.error)throw p.error;if(b.error)throw b.error;members=m.data||[];plans=p.data||[];bookings=b.data||[];render();
+}
+async function init(){
+ try{
+  const c=await fetch('/api/config');const cfg=await c.json();if(!c.ok||!cfg.ok)throw new Error(cfg.error||'Configuración EVOS no disponible');
+  sb=supabase.createClient(cfg.url,cfg.anonKey);const s=await sb.auth.getSession();user=s.data.session?.user;
+  if(!user){error('Necesitas iniciar sesión.');setTimeout(()=>location.href='/start',900);return}
+  const p=await sb.from('profiles').select('role').eq('id',user.id).single();if(p.error)throw p.error;
+  if(!['owner','admin'].includes(p.data?.role)){error('Acceso reservado a administración EVOS.');return}
+  await load();$('state').textContent='● EVOS Admin conectado · acceso protegido';
+ }catch(e){error('No se pudo abrir EVOS Admin: '+e.message)}
+}
+init();
+</script>
+</body>
+</html>
