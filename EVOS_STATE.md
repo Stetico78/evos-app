@@ -1,42 +1,38 @@
 # EVOS Development State
 
 ## Current level
-Level 3 — Subscriber experience, intelligent operations and monetization activation.
+Level 4 — Owner administration, subscriber control and production hardening.
 
 ## Completed
-- GitHub repository connected to Vercel architecture.
-- Supabase project `evos` active in the application architecture.
-- EVOS Core v1 schema applied.
-- Authentication UI added to the main application.
-- EVOS assessment flow added.
-- Evolution profile dashboard added at `/profile`.
-- User booking module added at `/booking`.
-- Booking cancellation and rescheduling added at `/booking`.
-- Booking validation, local timezone and mobile navigation added at `/booking`.
-- User-facing service catalog and booking tables created in Supabase.
-- Recommendation API added at `/api/recommend`.
-- Recommendations can be persisted in `ai_recommendations`.
-- Empty AI responses fall back to the EVOS rule engine.
-- Each new assessment receives its own persisted recommendation.
-- Evolution profile includes editable goal/name, score trends, assessment history, saved recommendations and the next booking.
-- Main dashboard links visibly to `/profile` and `/booking`.
-- Anonymous reads of profiles, assessments, recommendations and bookings are blocked by Supabase RLS.
-- Private member control center added at `/member`.
-- Member dashboard aggregates EVOS score, assessments, saved recommendations and future bookings.
-- EVOS AI upgraded to v0.5 and can receive current member context: goal, level, latest assessment, latest recommendation and next booking.
-- EVOS AI retains a deterministic local fallback so the member dashboard remains useful when the external model is unavailable.
-- Public acquisition landing page added at `/landing` for people and professionals.
-- Landing leads reuse the existing EVOS CRM endpoint instead of creating a parallel lead store.
-- CRM lead creation records same-origin social UTM attribution from the landing page referrer when available.
-- EVOS social operating system added under `social/EVOS_SOCIAL_SYSTEM.md`: EVOS is the central brand, the founder account builds authority and Evolution Essence acts as a transformation/wellbeing satellite.
-- Launch-day social schedule added under `social/LAUNCH_DAY.md`, balancing Reels/posts with Stories and interaction rather than flooding the feed.
-- Hourly EVOS content generation automation configured to alternate client and professional acquisition, with adaptations for the founder personal brand and Evolution Essence.
+- GitHub repository `Stetico78/evos-app` active.
+- Supabase project `evos` connected and healthy.
+- EVOS Core schema active with RLS enabled across public tables.
+- Authentication UI active.
+- Assessment flow active.
+- Evolution profile at `/profile`.
+- Booking flow at `/booking` with cancellation, rescheduling, validation, timezone support and mobile navigation.
+- Service catalog and booking tables active.
+- Recommendation API at `/api/recommend` with persistence in `ai_recommendations` and deterministic fallback.
+- Private member dashboard at `/member` with member context for EVOS AI v0.5.
+- Public acquisition landing at `/landing` using the existing CRM endpoint and UTM attribution.
+- EVOS social operating system and launch-day schedule added under `social/`.
+- Hourly EVOS content generation automation active.
+- Persistent EVOS plans and memberships already exist in Supabase.
+- Plan codes aligned to `free`, `evolution`, `pro` across plans and memberships.
+- Initial account bootstrapped as EVOS `owner`.
+- Role escalation hardened: normal users cannot promote themselves to admin/owner.
+- Secure admin detection function `is_evos_admin()` added.
+- Admin RLS access added for profiles, memberships and user bookings.
+- Secure admin RPCs added for role management and membership management.
+- Admin member overview RPC added with user, email, role, membership and next-booking data.
+- Safety rule added to prevent accidental demotion of the last owner.
+- Owner/admin dashboard added at `/admin` in GitHub.
 
 ## Current architecture
-Social / Landing → Account → Assessment → Member Dashboard → Evolution Profile → AI Recommendation → Booking → Follow-up → Membership / Retention.
+Social / Landing → Account → Assessment → Member Dashboard → Evolution Profile → AI Recommendation → Booking → Follow-up → Membership → Owner/Admin Control.
 
 ## Business direction
-EVOS must monetize while the platform is still being built. Priorities are:
+EVOS must monetize while the platform is still being built. Priorities:
 1. Immediate paid services and pilot programs.
 2. Recurring membership.
 3. Booking/payment flow.
@@ -45,20 +41,24 @@ EVOS must monetize while the platform is still being built. Priorities are:
 6. Professional SaaS subscription and premium visibility.
 
 ## Next technical priorities
-1. Validate `/member`, `/profile`, `/booking`, `/landing` and EVOS AI with a real authenticated production account and a real lead submission.
-2. Restore or connect the production Vercel project to the currently connected EVOS team so deployments and logs can be managed directly.
-3. Connect Supabase management access so subscriber status, policies and production data can be administered safely.
-4. Add persistent membership records with plan, status, renewal and entitlements.
-5. Add owner/admin subscriber dashboard with member search, status, next action and booking overview.
-6. Add professional profiles, availability and owner/admin agenda view.
-7. Add collision prevention and booking confirmation rules.
-8. Connect payments after the member and booking flow is validated.
-9. Add retention hooks, renewals and lifecycle automation.
-10. Internationalization: locale, country, timezone and currency by user.
-11. Add direct social/WhatsApp conversion and follow-up integrations when account connections are available.
+1. Bring the existing production Vercel project under the connected EVOS team so deployments and logs can be managed directly.
+2. Validate `/admin`, `/member`, `/profile`, `/booking`, `/landing` and EVOS AI against the real production deployment.
+3. Add admin agenda actions and booking status controls.
+4. Add professional profiles and availability.
+5. Add collision prevention and booking confirmation rules.
+6. Connect payments to `evos_plans` / `evos_memberships`.
+7. Add retention hooks, renewals and lifecycle automation.
+8. Add internationalization: locale, country, timezone and currency.
+9. Add direct social/WhatsApp conversion and follow-up integrations when account connections are available.
+
+## Security state
+- RLS is enabled across public tables.
+- Current user-facing tables use own-record policies.
+- Admin access is restricted to `owner` / `admin` roles through security-definer functions.
+- Supabase security advisor still reports leaked-password protection disabled and some future/unused tables with RLS but no policies; these remain intentionally closed and should be addressed before those modules are activated.
+
+## Current blocker
+The Vercel project name `evos-app` already exists, but the connected Vercel team `evos` exposes zero projects and cannot access that existing project. GitHub still references `https://evos-app.vercel.app`. The codebase can continue evolving in GitHub and Supabase, but production deploy/log verification remains blocked until that existing Vercel project is moved, transferred or reconnected to the accessible EVOS team.
 
 ## Universal-platform direction
-EVOS is intended to become a universal personalized dashboard for physical, mental and emotional evolution, connecting people with professionals and services. Trust, reviews, recommendations, verified history and matching should increase connection quality. EVOS can monetize through memberships, professional subscriptions, commissions and premium visibility.
-
-## Owner action needed
-Production deployment management is currently blocked because the connected Vercel team `evos` exposes no projects to the agent, while the repository documentation references `evos-app.vercel.app`. Direct Instagram/Meta account control is not available through the current integrations. Supabase management access also remains an external dependency for database-admin work. Development can continue in GitHub and content generation can continue automatically, but production deploy/log verification, database-admin changes and direct social publishing require the corresponding external connections.
+EVOS is a universal personalized control system for physical, mental, emotional and business evolution, connecting people with professionals, services, actions and measurable progress. Trust, history, matching, automation and AI should improve decision quality while memberships, professional subscriptions, commissions and premium visibility monetize the platform.
