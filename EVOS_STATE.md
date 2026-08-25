@@ -7,53 +7,42 @@ Level 5 — Professional marketplace, monetization and production validation.
 - GitHub repository `Stetico78/evos-app` active.
 - Supabase project `evos` connected and healthy.
 - EVOS Core schema active with RLS enabled across public tables.
-- Authentication UI active.
-- Assessment flow active.
-- Evolution profile at `/profile`.
-- Booking flow at `/booking` with cancellation, rescheduling, validation, timezone support and mobile navigation.
-- Recommendation API at `/api/recommend` with persistence in `ai_recommendations` and deterministic fallback.
-- Private member dashboard at `/member` with member context for EVOS AI.
+- Authentication UI, assessment, evolution profile, member dashboard and owner/admin dashboard exist.
+- Booking flow at `/booking` supports cancellation, rescheduling, validation, timezone support and mobile navigation.
 - Public acquisition landing at `/landing` with CRM/UTM attribution.
-- EVOS social operating system and hourly content generation workflow active in the repository.
-- Persistent EVOS plans and memberships exist in Supabase.
-- Initial account bootstrapped as EVOS `owner`.
-- Owner/admin dashboard active in GitHub.
-- Role escalation hardened: users cannot self-promote to professional/admin/owner.
-- Admin SECURITY DEFINER RPC execute permissions hardened against anonymous invocation.
-- Professional marketplace data model active: `evos_professionals`, `evos_professional_services`, public security-invoker marketplace view and professional availability.
+- Professional marketplace data model active: professionals, professional services, commission rules, availability and marketplace view.
 - Public marketplace UI added at `/marketplace` with category filters, professional, modality, duration and price.
-- Professional reservation UI added at `/reserve`.
+- Professional reservation UI added at `/reserve` and now shows habitual availability before booking.
 - Professional acquisition/pricing UI added at `/professionals`.
-- Professional onboarding now preserves the secure user role and routes applicants to professional validation instead of attempting client-side role escalation.
-- Marketplace commission engine active in database trigger with price/duration snapshots and EVOS/professional split.
+- Marketplace commission engine active server-side with price/duration snapshots and EVOS/professional split.
 - Professional time collisions blocked server-side.
 - Professional working-hours validation active server-side.
 - Verified-professional visibility enforced with RLS.
+- Credential gate active for clinical/psychological service categories; uncredentialed professionals cannot publish them.
 - Owner professional profile bootstrapped as verified/featured.
-- Current marketplace exposes 14 services including tarot, astrology/carta, coaching, training, massage, wellness, relationships, meditation/silence and movement.
+- Marketplace currently exposes 14 active professional services including tarot, astrology/carta, coaching, training, massage, wellness, relationships, meditation/silence and movement.
+- Admin SECURITY DEFINER functions are no longer executable anonymously; signed-in admin RPCs retain internal `is_evos_admin()` authorization checks.
 
 ## Marketplace economics
 Professional plans currently configured:
-1. `launch`: 0 EUR/month + 20% on the first completed-client connection, 0% marketplace commission on repeats, 25% on boosted first acquisition.
+1. `launch`: 0 EUR/month + 20% on the first client connection, 0% marketplace commission on repeats, 25% on boosted first acquisition.
 2. `growth`: 29.90 EUR/month + 12% on first connection, 0% on repeats, 20% boosted first acquisition.
 3. `elite`: 59.90 EUR/month + 8% on first connection, 0% on repeats, 15% boosted first acquisition.
 
-The database computes commission from trusted server-side rules, not from browser-submitted fee values.
+The database computes commission from trusted stored rules and service prices, not browser-submitted fee values.
 
-## Verified tests
-- Marketplace commission test: 35.00 EUR Growth first booking -> 4.20 EUR EVOS fee + 30.80 EUR professional net.
-- Repeat-client commission test -> 0% EVOS marketplace fee on the next booking with the same professional after a completed session.
-- Professional collision test -> overlapping booking rejected server-side.
-- Working-hours test -> booking outside professional availability rejected server-side.
-- Anonymous visibility test -> only active + verified professional profiles visible.
-- Anonymous marketplace view test -> published services readable through security-invoker view.
-- Test booking rows cleaned after validation.
+## Verified tests — 25 Aug 2026
+- Growth first booking test: 70.00 EUR gross -> 12% -> 8.40 EUR EVOS fee + 61.60 EUR professional net. Test transaction rolled back.
+- Repeat-client test: after a completed booking with the same professional, next 70.00 EUR booking -> 0% EVOS marketplace fee + 70.00 EUR professional net. Test transaction rolled back.
+- Professional collision test: an overlapping booking at 10:30 against an existing 10:00–11:00 booking was rejected server-side; temporary base row removed.
+- Working-hours test: a 22:00 booking against configured 09:00–20:00 availability was rejected server-side.
+- Credential test: attempting to publish psychology for a professional without a verified psychology credential was rejected server-side.
+- Anonymous marketplace-view test: role `anon` can read the 14 active verified published services through the security-invoker view.
 
 ## Current architecture
 Social / Landing -> Account -> Goal / Assessment -> EVOS Guide -> Marketplace -> Verified Professional -> Reservation -> Follow-up -> Membership -> Owner/Admin Control.
 
 ## Business direction
-EVOS must monetize while the platform is being built. Priorities:
 1. Sell existing EVOS services immediately.
 2. Recruit verified professionals and grow service supply.
 3. Earn first-connection commissions while leaving repeat marketplace commission at 0%.
@@ -65,27 +54,27 @@ EVOS must monetize while the platform is being built. Priorities:
 ## Next technical priorities
 1. Recover/transfer/reconnect the existing production Vercel `evos-app` project into the connected EVOS team.
 2. Deploy and visually validate `/marketplace`, `/reserve`, `/professionals`, `/start`, `/booking`, `/member`, `/profile`, `/admin` on production desktop and mobile.
-3. Enable/finalize Google OAuth provider configuration and test complete login callback.
-4. Make availability visible/selectable in the booking UI instead of allowing invalid datetime choices.
-5. Connect Stripe/payment provider for checkout, EVOS commission settlement, professional payout ledger and refunds/cancellations.
+3. Enable/finalize Google OAuth provider configuration and test the complete callback. Until then email magic-link remains the working login route.
+4. Replace free-form datetime booking with selectable generated slots from professional availability for a faster client UX.
+5. Connect payment provider for checkout, EVOS commission settlement, professional payout ledger, refunds and cancellations.
 6. Add professional self-service profile/service/availability management after verification.
-7. Add professional verification evidence, categories requiring credentials, moderation and suspension flows.
+7. Add verified credential administration and moderation/suspension flows.
 8. Add ratings/reviews only after completed bookings.
 9. Add professional search/matching by city, modality, language, price, rating and EVOS recommendation.
-10. Add direct social/WhatsApp conversion and follow-up integrations when account connections are available.
+10. Connect social/WhatsApp lead capture and follow-up when corresponding account connections are available.
 
 ## Security state
 - RLS is enabled on marketplace-facing tables.
 - Marketplace public data is limited to active + verified professionals/services.
-- User bookings remain owner-record protected and professional read access is scoped to their own bookings.
+- User bookings remain own-record protected; professional read access is scoped to their own professional bookings.
 - Commission amounts are calculated server-side from stored service/plan data.
-- Admin RPC anonymous EXECUTE access has been revoked.
-- Supabase still has leaked-password protection disabled; enable before wider public launch.
+- Admin RPC anonymous EXECUTE access is revoked; admin actions still check admin/owner identity internally.
+- Supabase leaked-password protection remains disabled and must be enabled before wider password-based public use.
 - Some future/unused RLS tables intentionally have no policies and remain closed until their modules are activated.
-- Clinical/psychological services must not be published as such without corresponding professional credentials and verification.
+- Clinical/psychological services are credential-gated and remain unpublished without verified accreditation.
 
 ## Current blocker
-The connected Vercel team `evos` still exposes zero projects. The existing production project/domain `evos-app.vercel.app` cannot currently be managed or inspected through the connected team. GitHub and Supabase changes are real and testable, but production deployment, browser validation and screenshots remain blocked until that Vercel project is transferred/reconnected or a new accessible production project is explicitly created and the domain migrated.
+The connected Vercel team `evos` (`team_4tp93g7yjkepAoTV2QPioIx8`) currently returns zero projects. The existing production domain `evos-app.vercel.app` cannot be managed or inspected through the connected team. GitHub and Supabase changes are real and tested, but production deployment, browser validation and real screenshots remain blocked until that Vercel project is transferred/reconnected or an accessible replacement project is created and the domain is migrated.
 
 ## Universal-platform direction
-EVOS is a universal personalized control system for physical, mental, emotional and business evolution, connecting people with verified professionals, services, actions and measurable progress. Trust, history, matching, automation and AI should improve decision quality while memberships, professional subscriptions, commissions, premium visibility and future transaction services monetize the platform.
+EVOS is a universal personalized control system for physical, mental, emotional and business evolution, connecting people with verified professionals, services, actions and measurable progress. Trust, history, matching, automation and AI should improve decision quality while memberships, professional subscriptions, first-connection commissions, premium visibility and future transaction services monetize the platform.
