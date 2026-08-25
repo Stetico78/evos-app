@@ -3,7 +3,7 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/start",
+      "destination": "/landing",
       "permanent": false
     }
   ],
