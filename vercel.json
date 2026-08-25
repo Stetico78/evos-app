@@ -5,6 +5,16 @@
       "source": "/",
       "destination": "/landing",
       "permanent": false
+    },
+    {
+      "source": "/guide",
+      "destination": "/member",
+      "permanent": false
+    },
+    {
+      "source": "/professionals",
+      "destination": "/pro",
+      "permanent": false
     }
   ],
   "rewrites": [
