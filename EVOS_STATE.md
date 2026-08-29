@@ -12,6 +12,8 @@ Level 5 — Professional marketplace, monetization and production validation.
 - Public acquisition landing at `/landing` with CRM/UTM attribution.
 - Professional marketplace data model active: professionals, professional services, commission rules, availability and marketplace view.
 - Public marketplace UI added at `/marketplace` with category filters, professional, modality, duration and price.
+- EVOS AI Receptionist prototype added at `/receptionist` with server route `/api/receptionist`: the client explains what they need, EVOS matches up to 3 real marketplace services and sends the client directly to `/reserve`.
+- Receptionist matching uses Gemini when configured and a deterministic EVOS rule-engine fallback when the AI service is unavailable.
 - Professional reservation UI added at `/reserve` and now shows habitual availability before booking.
 - Professional acquisition/pricing UI added at `/professionals`.
 - Marketplace commission engine active server-side with price/duration snapshots and EVOS/professional split.
@@ -40,28 +42,30 @@ The database computes commission from trusted stored rules and service prices, n
 - Anonymous marketplace-view test: role `anon` can read the 14 active verified published services through the security-invoker view.
 
 ## Current architecture
-Social / Landing -> Account -> Goal / Assessment -> EVOS Guide -> Marketplace -> Verified Professional -> Reservation -> Follow-up -> Membership -> Owner/Admin Control.
+Social / Landing -> Account -> Goal / Assessment -> EVOS Guide / AI Receptionist -> Marketplace -> Verified Professional -> Reservation -> Follow-up -> Membership -> Owner/Admin Control.
 
 ## Business direction
 1. Sell existing EVOS services immediately.
-2. Recruit verified professionals and grow service supply.
-3. Earn first-connection commissions while leaving repeat marketplace commission at 0%.
-4. Grow recurring revenue through professional Growth/Elite subscriptions and member plans.
-5. Add payments, payouts and automated fee settlement.
-6. Add premium visibility/Boost with transparent acquisition pricing.
-7. Build referral, retention and lifecycle loops.
+2. Use EVOS AI Receptionist as the first internal proof of AI-assisted lead qualification and booking conversion.
+3. Recruit verified professionals and grow service supply.
+4. Earn first-connection commissions while leaving repeat marketplace commission at 0%.
+5. Grow recurring revenue through professional Growth/Elite subscriptions and member plans.
+6. Add payments, payouts and automated fee settlement.
+7. Add premium visibility/Boost with transparent acquisition pricing.
+8. Build referral, retention and lifecycle loops.
 
 ## Next technical priorities
 1. Recover/transfer/reconnect the existing production Vercel `evos-app` project into the connected EVOS team.
-2. Deploy and visually validate `/marketplace`, `/reserve`, `/professionals`, `/start`, `/booking`, `/member`, `/profile`, `/admin` on production desktop and mobile.
-3. Enable/finalize Google OAuth provider configuration and test the complete callback. Until then email magic-link remains the working login route.
-4. Replace free-form datetime booking with selectable generated slots from professional availability for a faster client UX.
-5. Connect payment provider for checkout, EVOS commission settlement, professional payout ledger, refunds and cancellations.
-6. Add professional self-service profile/service/availability management after verification.
-7. Add verified credential administration and moderation/suspension flows.
-8. Add ratings/reviews only after completed bookings.
-9. Add professional search/matching by city, modality, language, price, rating and EVOS recommendation.
-10. Connect social/WhatsApp lead capture and follow-up when corresponding account connections are available.
+2. Deploy and visually validate `/receptionist`, `/api/receptionist`, `/marketplace`, `/reserve`, `/professionals`, `/start`, `/booking`, `/member`, `/profile`, `/admin` on production desktop and mobile.
+3. Connect the EVOS AI Receptionist flow to checkout so recommendation -> reservation -> payment can complete without manual handoff.
+4. Enable/finalize Google OAuth provider configuration and test the complete callback. Until then email magic-link remains the working login route.
+5. Replace free-form datetime booking with selectable generated slots from professional availability for a faster client UX.
+6. Connect payment provider for checkout, EVOS commission settlement, professional payout ledger, refunds and cancellations.
+7. Add professional self-service profile/service/availability management after verification.
+8. Add verified credential administration and moderation/suspension flows.
+9. Add ratings/reviews only after completed bookings.
+10. Add professional search/matching by city, modality, language, price, rating and EVOS recommendation.
+11. Connect social/WhatsApp lead capture and follow-up when corresponding account connections are available.
 
 ## Security state
 - RLS is enabled on marketplace-facing tables.
