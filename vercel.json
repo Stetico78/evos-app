@@ -21,6 +21,22 @@
     {
       "source": "/control",
       "destination": "/index.html"
+    },
+    {
+      "source": "/simulation",
+      "destination": "/simulation.html"
+    },
+    {
+      "source": "/receptionist",
+      "destination": "/receptionist.html"
+    },
+    {
+      "source": "/marketplace",
+      "destination": "/marketplace.html"
+    },
+    {
+      "source": "/reserve",
+      "destination": "/reserve.html"
     }
   ],
   "headers": [
