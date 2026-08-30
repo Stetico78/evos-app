@@ -1,4 +1,5 @@
 (function(){
+  const EVOS_WHATSAPP='34645772010';
   const utcStamp=(d)=>d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z');
   const clean=(v)=>String(v??'').trim();
 
@@ -15,13 +16,13 @@
       +'&text='+encodeURIComponent(title)
       +'&dates='+encodeURIComponent(utcStamp(starts)+'/'+utcStamp(end))
       +'&details='+encodeURIComponent(details);
-    const whatsapp='https://wa.me/?text='+encodeURIComponent(
-      `✅ Reserva EVOS confirmada\n${service}\n${professional}\n📅 ${when}\n💶 ${price}\nReserva: ${bookingId}`
+    const whatsapp='https://wa.me/'+EVOS_WHATSAPP+'?text='+encodeURIComponent(
+      `Hola, confirmo mi reserva EVOS.\n\nServicio: ${service}\nProfesional: ${professional}\nFecha: ${when}\nPrecio: ${price}\nReserva: ${bookingId}`
     );
 
     return `<div style="display:grid;gap:10px;margin-top:14px">
       <a class="login" href="${calendar}" target="_blank" rel="noopener">AÑADIR A GOOGLE CALENDAR</a>
-      <a class="login" href="${whatsapp}" target="_blank" rel="noopener">CONFIRMAR / COMPARTIR POR WHATSAPP</a>
+      <a class="login" href="${whatsapp}" target="_blank" rel="noopener">CONFIRMAR POR WHATSAPP</a>
       <a class="login" href="/booking">VER MIS CITAS</a>
     </div>`;
   }
