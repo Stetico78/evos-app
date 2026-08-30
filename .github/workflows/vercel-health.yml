@@ -1,0 +1,35 @@
+name: Verify EVOS Vercel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/vercel-health.yml'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check EVOS landing
+        shell: bash
+        run: |
+          set -e
+          URL="https://evos-recovery-evos1.vercel.app/landing"
+          CODE=$(curl -L -sS -o /tmp/landing.html -w "%{http_code}" "$URL")
+          echo "landing_status=$CODE"
+          echo "landing_bytes=$(wc -c < /tmp/landing.html)"
+          test "$CODE" = "200"
+          grep -qi "EVOS" /tmp/landing.html
+
+      - name: Check EVOS API config
+        shell: bash
+        run: |
+          set -e
+          URL="https://evos-recovery-evos1.vercel.app/api/config"
+          CODE=$(curl -L -sS -o /tmp/config.json -w "%{http_code}" "$URL")
+          echo "config_status=$CODE"
+          cat /tmp/config.json
+          echo
+          test "$CODE" = "200"
+          grep -q '"ok"' /tmp/config.json
