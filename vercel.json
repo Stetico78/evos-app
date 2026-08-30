@@ -23,6 +23,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/start",
+      "destination": "/start.html"
+    },
+    {
       "source": "/simulation",
       "destination": "/simulation.html"
     },
