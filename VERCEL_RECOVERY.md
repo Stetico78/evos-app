@@ -1,24 +1,36 @@
 # EVOS Vercel Recovery
 
-Recovery production created on 2026-08-30.
+Functional replacement production created on 2026-08-30.
 
 - Project name: `evos-live`
 - Production alias: `https://evos-live-evos1.vercel.app`
-- Deployment ID: `dpl_4QpR3VYF4ALGHbNBFN2GHqbsAyci`
-- Purpose: keep EVOS deployable while the legacy `evos-app` Vercel project remains invisible to the connected Vercel team/API.
+- Current deployment ID: `dpl_BqaogjKG37ro2bLcVXVQ8sTsFy9j`
+- Supabase project: `gzswijcavmkgwqbgtlac`
 
-## Recovery production routes
+## Current live flow
 
 - `/` — EVOS landing
-- `/receptionist` — simple EVOS lead/service routing
-- `/marketplace` — service selection
-- `/reserve` — reservation request UI
-- `/api/health` — health endpoint
+- `/receptionist` — searches and ranks the real EVOS marketplace catalogue
+- `/marketplace` — loads the 14 currently published marketplace services from Supabase
+- `/start` — email/password account creation and login
+- `/reserve?ps=<professional_service_id>` — authenticated reservation into `evos_user_bookings`
+- `/booking` — signed-in user's EVOS bookings
+- `/api/config` — public Supabase client configuration
+- `/api/health` — EVOS production health endpoint
+
+## Data verified before deployment
+
+- 14 rows exposed through `evos_marketplace_services`
+- 5 active professional availability rows
+- `evos_user_bookings` contains marketplace booking, commission snapshot and payment-status fields
 
 ## Source of truth
 
-The full EVOS application remains in this repository. The recovery deployment is an operational bridge, not a replacement for the full marketplace/booking/Supabase codebase.
+The complete EVOS codebase remains in `Stetico78/evos-app`. The inaccessible legacy Vercel project is no longer a blocker for continued product development. New production work can proceed through `evos-live` while the old project/account linkage is recovered separately.
 
-## Next production step
+## Next product priorities
 
-Migrate the full repository routes and server APIs into the accessible Vercel project, then reconnect environment variables and validate production route-by-route.
+1. Add checkout/payment to reservation.
+2. Add WhatsApp confirmation and follow-up.
+3. Connect professional notifications and Google Calendar.
+4. Replace the compact recovery UI route-by-route with the full EVOS UI from this repository while preserving the working production flow.
