@@ -15,21 +15,31 @@ jobs:
         shell: bash
         run: |
           set -e
-          URL="https://evos-recovery-evos1.vercel.app/landing"
+          URL="https://evos-live-evos1.vercel.app/"
           CODE=$(curl -L -sS -o /tmp/landing.html -w "%{http_code}" "$URL")
           echo "landing_status=$CODE"
           echo "landing_bytes=$(wc -c < /tmp/landing.html)"
           test "$CODE" = "200"
           grep -qi "EVOS" /tmp/landing.html
 
-      - name: Check EVOS API config
+      - name: Check EVOS marketplace
         shell: bash
         run: |
           set -e
-          URL="https://evos-recovery-evos1.vercel.app/api/config"
-          CODE=$(curl -L -sS -o /tmp/config.json -w "%{http_code}" "$URL")
-          echo "config_status=$CODE"
-          cat /tmp/config.json
+          URL="https://evos-live-evos1.vercel.app/marketplace"
+          CODE=$(curl -L -sS -o /tmp/marketplace.html -w "%{http_code}" "$URL")
+          echo "marketplace_status=$CODE"
+          test "$CODE" = "200"
+          grep -qi "EVOS" /tmp/marketplace.html
+
+      - name: Check EVOS API health
+        shell: bash
+        run: |
+          set -e
+          URL="https://evos-live-evos1.vercel.app/api/health"
+          CODE=$(curl -L -sS -o /tmp/health.json -w "%{http_code}" "$URL")
+          echo "health_status=$CODE"
+          cat /tmp/health.json
           echo
           test "$CODE" = "200"
-          grep -q '"ok"' /tmp/config.json
+          grep -q '"ok":true' /tmp/health.json
