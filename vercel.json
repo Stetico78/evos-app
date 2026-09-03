@@ -41,6 +41,10 @@
     {
       "source": "/reserve",
       "destination": "/reserve.html"
+    },
+    {
+      "source": "/entrenamiento",
+      "destination": "/entrenamiento.html"
     }
   ],
   "headers": [
