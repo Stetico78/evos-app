@@ -1,0 +1,89 @@
+{
+  "evos_business": {
+    "name": "EVOS Business",
+    "sector": "business",
+    "languages": ["es", "en", "it", "fr"],
+    "goal": "Cualificar consultas, recomendar el servicio correcto, capturar lead y llevar a reserva o contacto humano.",
+    "channels": ["web"],
+    "catalog_source": "evos_marketplace_services",
+    "conversion_events": ["qualified_lead", "service_recommendation", "booking_request", "human_handoff"]
+  },
+  "portes_montajes": {
+    "name": "Portes & Montajes EVOS",
+    "sector": "services",
+    "languages": ["es", "it", "fr", "en"],
+    "goal": "Entender un transporte o montaje sin formularios pesados, recoger solo los datos necesarios y preparar un presupuesto/cita para confirmación.",
+    "channels": ["web", "whatsapp_handoff"],
+    "catalog": [
+      {
+        "id": "transport-local",
+        "name": "Transporte / porte",
+        "description": "Recogida y transporte de muebles, objetos y pequeñas mudanzas.",
+        "price": 0,
+        "duration": 0,
+        "unit": "quote",
+        "keywords": ["porte", "transporte", "mudanza", "recogida", "muebles", "traslado", "trasloco", "transport", "demenagement"]
+      },
+      {
+        "id": "assembly",
+        "name": "Montaje y desmontaje",
+        "description": "Montaje o desmontaje de muebles y equipamiento.",
+        "price": 0,
+        "duration": 0,
+        "unit": "quote",
+        "keywords": ["montaje", "desmontaje", "mueble", "armario", "cama", "montaggio", "montage", "assembly"]
+      },
+      {
+        "id": "transport-assembly",
+        "name": "Transporte + montaje",
+        "description": "Servicio combinado de recogida, transporte, desmontaje y/o montaje.",
+        "price": 0,
+        "duration": 0,
+        "unit": "quote",
+        "keywords": ["transportar y montar", "mudanza completa", "recoger y montar", "transport and assembly", "trasporto montaggio"]
+      }
+    ],
+    "required_quote_fields": ["origin", "destination", "items_summary", "preferred_date", "stairs_or_lift", "contact"],
+    "optional_quote_fields": ["photos", "parking_access", "assembly_needed"],
+    "conversion_events": ["quote_started", "quote_ready", "whatsapp_handoff", "confirmed_job"]
+  },
+  "evos_training": {
+    "name": "EVOS Training",
+    "sector": "fitness",
+    "languages": ["es", "en", "it", "fr"],
+    "goal": "Entender objetivo, nivel, material, disponibilidad y limitaciones declaradas; recomendar la mejor modalidad y llevar a valoración o sesión.",
+    "channels": ["web", "whatsapp_handoff"],
+    "catalog": [
+      {
+        "id": "assessment",
+        "name": "Valoración inicial",
+        "description": "Primera valoración para entender objetivo, disponibilidad, nivel y modalidad adecuada.",
+        "price": 0,
+        "duration": 30,
+        "unit": "EUR",
+        "keywords": ["empezar", "valoracion", "evaluacion", "objetivo", "fitness", "training", "allenamento", "entrainement"]
+      },
+      {
+        "id": "online-training",
+        "name": "Entrenamiento personal online",
+        "description": "Sesión individual online con programación adaptada al objetivo y material disponible.",
+        "price": 0,
+        "duration": 60,
+        "unit": "EUR",
+        "keywords": ["online", "casa", "entrenamiento personal", "personal training", "allenamento online"]
+      },
+      {
+        "id": "inperson-training",
+        "name": "Entrenamiento personal presencial",
+        "description": "Sesión individual presencial con seguimiento y progresión.",
+        "price": 0,
+        "duration": 60,
+        "unit": "EUR",
+        "keywords": ["presencial", "gimnasio", "entrenador", "personal trainer", "in person"]
+      }
+    ],
+    "required_intake_fields": ["goal", "experience_level", "availability", "training_location", "equipment", "contact"],
+    "safety_note": "No diagnosticar ni prescribir tratamiento médico. Ante dolor agudo, síntomas graves o dudas clínicas, derivar a profesional sanitario.",
+    "conversion_events": ["assessment_started", "qualified_training_lead", "assessment_booking", "training_sale"]
+  }
+}
