@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "engines": {"node": ">=20"},
+  "dependencies": {
+    "ai": "^6.0.34",
+    "zod": "^4.1.0"
+  }
+}
