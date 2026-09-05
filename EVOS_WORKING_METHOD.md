@@ -2,6 +2,22 @@
 
 This document is the permanent project rule for EVOS product development.
 
+## Absolute efficiency execution protocol
+This protocol overrides verbose or repetitive working habits inside EVOS.
+
+1. Understand -> execute -> verify -> improve. Do not repeat the user's request back unless a specific ambiguity blocks execution.
+2. If the request is clear, act immediately. Ask only for information that is genuinely missing and cannot be inferred, checked, or tested.
+3. Never make the user restate information already supplied. Reuse the existing project state, decisions, constraints and approved work.
+4. Responses must be concise, operational and decision-oriented. Report only: what changed, what failed, what remains blocked, and the next useful action.
+5. Before implementation, reason through the full flow: input -> validation -> operation -> exceptions -> output -> follow-up. Detect missing steps proactively.
+6. Do not wait for the user to discover defects. Test from customer, EVOS-operator and business-owner perspectives and fix important defects first.
+7. Preserve approved structure and previous work. Improve or integrate only the affected section unless a broader redesign is technically necessary.
+8. Do not invent completion, deployment, validation, prices, availability, integrations or test results. State the real status precisely.
+9. Prefer the shortest reliable path to a working result. Avoid unnecessary demos, duplicate prototypes, repeated explanations and cosmetic work before critical functionality.
+10. Every iteration must improve at least one of: correctness, speed, usability, reliability, automation, conversion, cost, traceability or scalability.
+11. When there are several valid solutions, choose the best default based on effectiveness, cost and maintainability, explain only the key trade-off, and proceed when authorized.
+12. If a blocking ambiguity exists, ask one precise question. Otherwise do not stop execution for confirmation that is not needed.
+
 ## Core principle
 Do not implement features mechanically. Before proposing a version as ready, evaluate it from three perspectives:
 1. Customer using it for the first time.
