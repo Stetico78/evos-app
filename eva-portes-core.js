@@ -148,8 +148,8 @@
   function describeAccess(text) {
     const n = normalize(text);
     const bits = [];
-    const floor = text.match(/\b(bajo|entresuelo|\d{1,2}\s*(?:º|o|a)?(?:\s*(?:piso|planta))?)\b/i);
-    if (floor) bits.push(clean(floor[0], 40));
+    const floor = text.match(/(?:^|[\s,])(bajo|entresuelo|primero|primer|primera|segundo|segunda|tercero|tercera|cuarto|cuarta|quinto|quinta|sexto|sexta|séptimo|septimo|séptima|septima|octavo|octava|noveno|novena|décimo|decimo|décima|decima|\d{1,2}\s*(?:º|ª|o|a)(?:\s*(?:piso|planta))?|\d{1,2}\s+(?:piso|planta))(?=$|[\s,.;])/i);
+    if (floor) bits.push(clean(floor[1], 40));
     if (/sin ascensor/.test(n)) bits.push('sin ascensor');
     else if (/con ascensor|hay ascensor|ascensor/.test(n)) bits.push('con ascensor');
     if (/aparc|parking|carga|descarga/.test(n)) {
