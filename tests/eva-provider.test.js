@@ -25,3 +25,17 @@ test('returns a safe unavailable error when the provider rejects the key', async
 test('rejects malformed provider output instead of fabricating a conversation', async () => {
   await assert.rejects(callEvaModel('Hola', [], {}, {env:{OPENAI_API_KEY:'test'},fetch:async()=>({ok:true,json:async()=>({choices:[{message:{content:'{"updates": []}'}}]})})}), /EVA_INVALID_RESPONSE/);
 });
+
+test('tries the existing Gemini account when OpenAI quota is exhausted', async () => {
+  let requests=0;
+  const result=await callEvaModel('Un sofá',[],{}, {env:{OPENAI_API_KEY:'openai-test',GEMINI_API_KEY:'gemini-test'},fetch:async(url,options)=>{
+    requests++;
+    if(requests===1)return {ok:false,status:429,json:async()=>({error:{code:'insufficient_quota'}})};
+    assert.match(url,/generativelanguage.googleapis.com/);
+    assert.equal(options.headers['x-goog-api-key'],'gemini-test');
+    return {ok:true,json:async()=>({candidates:[{content:{parts:[{text:JSON.stringify({reply:'¿Dónde recogemos el sofá?',updates:{load:{itemTypes:['sofá']},route:{status:'verified'}}})}]}}]})};
+  }});
+  assert.equal(requests,2);
+  assert.equal(result.reply,'¿Dónde recogemos el sofá?');
+  assert.equal(result.updates.route,undefined);
+});
