@@ -39,3 +39,19 @@ test('tries the existing Gemini account when OpenAI quota is exhausted', async (
   assert.equal(result.reply,'¿Dónde recogemos el sofá?');
   assert.equal(result.updates.route,undefined);
 });
+
+test('recovers one transient Gemini failure with one bounded retry',async()=>{
+ let calls=0,delays=[];
+ const result=await callEvaModel('Montar un armario',[],{}, {env:{GEMINI_API_KEY:'test',EVA_PROVIDER:'gemini',EVA_GEMINI_MODEL:'gemini-3.8-flash'},sleep:async ms=>delays.push(ms),fetch:async()=>{
+  calls++;
+  if(calls===1)return{ok:false,status:503,json:async()=>({error:{status:'UNAVAILABLE'}})};
+  return{ok:true,json:async()=>({candidates:[{content:{parts:[{text:JSON.stringify({reply:'¿En qué localidad se hará el montaje?',updates:{serviceType:'assembly_only'}})}]}}]})};
+ }});
+ assert.equal(result.updates.serviceType,'assembly_only');assert.equal(calls,2);assert.equal(delays.length,1);assert.ok(delays[0]>=500&&delays[0]<=1500);
+});
+
+test('does not loop or retry exhausted quota',async()=>{
+ let calls=0;
+ await assert.rejects(callEvaModel('Hola',[],{}, {env:{GEMINI_API_KEY:'test',EVA_PROVIDER:'gemini'},fetch:async()=>{calls++;return{ok:false,status:429,json:async()=>({error:{status:'RESOURCE_EXHAUSTED'}})};}}),/EVA_GEMINI_QUOTA_EXHAUSTED/);
+ assert.equal(calls,1);
+});
